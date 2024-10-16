@@ -6,7 +6,7 @@
 /*   By: antferna <antferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/16 12:54:30 by antferna          #+#    #+#             */
-/*   Updated: 2024/10/16 13:09:00 by antferna         ###   ########.fr       */
+/*   Updated: 2024/10/16 15:24:21 by antferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,20 +44,20 @@ class Client
 		std::string getNickName();
 		std::string getHostName();
 		std::string getBuffer();
-		std::string getIpadd();
+		std::string getIpAdd();
 		bool	 	getRegistered();
-		bool	 	getLogedin();
+		bool	 	getLogedIn();
 		bool 	 	getInviteChannel(std::string &ChName);
 		
 
 		//----------------- SETTERS -----------------
 		void		setFd(int fd);
-		void		setUserName(std::string username);
-		void		setNickname(std::string nickname);
+		void		setUserName(std::string& username);
+		void		setNickname(std::string& nickname);
 		void 		setBuffer(std::string received);
-		void		setIpadd(std::string ipadd);
+		void		setIpAdd(std::string ipadd);
 		void		setRegistered(bool value);
-		void		setLogedin(bool value);
+		void		setLogedIn(bool value);
 
 		//----------------- METHODS -----------------
 		void 		addChannelInvite(std::string &chname);
