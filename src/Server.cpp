@@ -6,13 +6,11 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/15 11:36:54 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/10/16 13:07:47 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/10/16 14:28:29 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/Server.hpp"
-
-/*  CLASE CANONICA ORTODOXA */
 
 Server::Server()
 {
@@ -61,31 +59,29 @@ std::string Server::GetPassword()
 Client *Server::GetClient(int fd)
 {
     for (size_t i = 0; i < this->clients.size(); i++) {
-        if (this->clients[i].GetFd() == fd)
+        if (this->clients[i].getFd() == fd)
             return &this->clients[i];
     }
     return NULL;
 }
 
-//GetNickname es un getter de Client
 Client *Server::GetClientNick(std::string nickname)
 {
     for(size_t i = 0; i < this->clients.size(); i++) {
-        if (this->clients[i].GetNickname() == nickname)
+        if (this->clients[i].getNickname() == nickname)
             return &this->clients[i]
     }
     return NULL;
 }
 
-//GetName es un getter de Channel 
-Channel *Server::GetChannel(std::string name)
+/* Channel *Server::GetChannel(std::string name)
 {
     for(size_t i = 0; i < this->channels.size(); i++) {
         if (this->channels[i].GetName() == name)
             return &this->channels[i];
     }
     return NULL;
-}
+} */
 
 /*  SETTERS */
 
@@ -109,10 +105,10 @@ void Server::AddClient(Client newClient)
     this->clients.push_back(newClient);
 }
 
-void Server::AddChannel(Channel newChannel)
+/* void Server::AddChannel(Channel newChannel)
 {
     this->channels.push_back(newChannel);
-}
+} */
 
 void Server::AddFds(pollfd newFd)
 {
@@ -122,12 +118,12 @@ void Server::AddFds(pollfd newFd)
 
 /*  FUNCIONES   */
 
-void Server:set_server_socket()
+void Server::set_server_socket()
 {
     int en = 1;
     
     add.sin_family = AF_INET;
-    add.sin_family.s_addr = INADDR_ANY;
+    add.sin_addr.s_addr = INADDR_ANY;
     add.sin_port = htons(port);
     server_fdsocket = socket(AF_INET, SOCK_STREAM, 0);
     
@@ -138,7 +134,7 @@ void Server:set_server_socket()
     if (fcntl(server_fdsocket, F_SETFL, O_NONBLOCK) == -1)
         throw(std::runtime_error("failed to set option (O_NONBLOCK) on socket"));
     if (bind(server_fdsocket, (struct sockaddr *)&add, sizeof(add)) == -1)
-        throw(std::rutime_error("failed to bind socket"));
+        throw(std::runtime_error("failed to bind socket"));
     if (listen(server_fdsocket, SOMAXCONN) == -1)
         throw(std::runtime_error("listen() failed"));
     new_cli.fd = server_fdsocket;

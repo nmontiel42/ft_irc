@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/15 11:25:52 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/10/16 13:08:39 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/10/16 14:27:06 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@
 #include <ctime>
 
 #include "Client.hpp"
-#include "Channel.hpp"
+//#include "Channel.hpp"
 
 class Client;
 class Channel;
@@ -42,15 +42,14 @@ class Server
         int server_fdsocket;
         static bool Signal;
         std::string password;
-        std::vector<Client> clients; //anadir clase clientes
-        std::vector<Channel> channels; //anadir clase channel
+        std::vector<Client> clients;
+        std::vector<Channel> channels;
         std::vector<struct pollfd> fds;
         struct sockaddr_in add;
         struct sockaddr_in cliadd;
         struct pollfd new_cli;
         
     public:
-        //* Clase Canonica Ortodoxa *//
         Server();
         Server(Server const &);
         ~Server();
@@ -63,19 +62,21 @@ class Server
         std::string GetPassword();
         Client *GetClient(int fd);
         Client *GetClientNick(std::string nickame);
-        Channel *GetChannel(std::string name);
+        //Channel *GetChannel(std::string name);
 
         //* Setters *//
         void SetPort(int port);
         void SetFd(int server_fdsocket);
         void SetPassword(std::string password);
         void AddClient(Client newClient);
-        void AddChannel(Channel newChannel);
+        //void AddChannel(Channel newChannel);
         void AddFds(pollfd newFd);
+
+        // Part of the authentication system
         /* void set_username(std::string &username, int fd);
-        void set_nickname(std::string cmd, int fd); */ //Todavia no
+        void set_nickname(std::string cmd, int fd); */
         
-        //* Funciones *//
+        //* Functions *//
         void set_server_socket();
 };
 
