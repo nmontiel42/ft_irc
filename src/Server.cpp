@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
+/*   By: antferna <antferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/15 11:36:54 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/10/16 14:28:29 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/10/16 16:07:23 by antferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,4 +141,24 @@ void Server::set_server_socket()
     new_cli.events = POLLIN;
     new_cli.revents = 0;
     fds.push_back(new_cli);
+}
+
+void Server::accept_new_client(){
+    Client newClient;
+    
+    memset(&cliadd, 0, sizeof(cliadd));
+    socklen_t len = sizeof(cliadd);
+    int incoming_fd = accept(server_fdsocket, (struct sockaddr *)&cliadd, &len);
+    if (incoming_fd == -1)
+        throw(std::runtime_error("accept() failed"));
+    if (fcntl(incoming_fd, F_SETFL, O_NONBLOCK) == -1)
+        throw(std::runtime_error("failed to set option (O_NONBLOCK) on socket"));
+    new_cli.fd = incoming_fd;
+    new_cli.events = POLLIN;
+    new_cli.revents = 0;
+    newClient.setFd(incoming_fd);
+    newClient.setIpAdd(inet_ntoa(cliadd.sin_addr));
+    clients.push_back(newClient);
+    fds.push_back(new_cli);
+    std::cout <<"New client <" << incoming_fd << "> connected from " << newClient.getIpAdd() << std::endl;    
 }
