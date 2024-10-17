@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anttorre <anttorre@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/15 11:25:52 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/10/17 13:44:48 by anttorre         ###   ########.fr       */
+/*   Updated: 2024/10/17 14:36:58 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,12 +64,12 @@ class Server
         Channel *getChannel(std::string name);
 
         //* Setters *// (done)
-        void SetPort(int port);
-        void SetFd(int server_fdsocket);
-        void SetPassword(std::string password);
-        void AddClient(Client newClient);
-        void AddChannel(Channel newChannel);
-        void AddFds(pollfd newFd);
+        void setPort(int port);
+        void setFd(int server_fdsocket);
+        void setPassword(std::string password);
+        void addClient(Client newClient);
+        void addChannel(Channel newChannel);
+        void addFds(pollfd newFd);
 
         // Part of the authentication system 
         
@@ -95,10 +95,10 @@ class Server
         void close_fds();
 
         //*----------------------Authentification System----------------------*//
-        bool notregistered(int fd);
+        bool notRegistered(int fd);
         bool nickNameInUse(std::string &);
-        bool is_validNickname(std::string &);
-        //void client_authen(int fd, std::string pass);
+        bool isValidNickName(std::string &);
+        void client_authen(int fd, std::string pass);
         //void set_username(std::string &username, int fd);
         //void set_nickname(std::string cmd, int fd); 
         

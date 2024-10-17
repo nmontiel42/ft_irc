@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/16 14:39:19 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/10/17 13:31:47 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/10/17 13:39:09 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,6 @@ class Channel
         void SetName(std::string name);
         void SetTime(std::string time);
         void setTopicRestriction(bool value);
-        void setModeAtindex(size_t index, bool mode);
+        void setModeAtIndex(size_t index, bool mode);
         void setCreationTime();
 };
