@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2024/10/17 15:25:59 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/10/17 15:37:00 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -324,4 +324,36 @@ void Server::set_username(std::string &cmd, int fd)
         cli->setLogedIn(true);
         _sendResponse(cli->getNickName() + ": Welcome to the IRC server!\r\n", fd);
     }
+}
+
+void Server::set_nickname(std::string nick, int fd)
+{
+    std::string inUse;
+    nick = nick.substr(4);
+    size_t pos = nick.find("\t\v ");
+    if (pos < nick.size())
+    {
+        nick = nick.substr(pos);
+        if (nick[0] == ':')
+            nick.erase(nick.begin());
+    }
+    Client *cli = getClient(fd);
+    if (pos == std::string::npos || nick.empty())
+    {
+        _sendResponse(std::string("*") + ": Not enough parameters.\r\n", fd);
+        return ;
+    }
+    if (nickNameInUse(nick) && cli->getNickName() != nick)
+    {
+        inUse = "*";
+        if (cli->getNickName().empty())
+            cli->setNickname(inUse);
+        _sendResponse(std::string(nick) + ": Nickname is already in use\r\n", fd);
+        return ;
+    }
+    if (!isValidNickName(nick))
+    {
+        _sendResponse
+    }
+    
 }
