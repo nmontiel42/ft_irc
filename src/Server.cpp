@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anttorre <anttorre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2024/10/17 15:23:27 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/10/17 15:33:33 by anttorre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,29 @@ void Server::addFds(pollfd newFd)
 }
 
 
-/*  FUNCIONES   */
+/*  FUNCTIONS   */
+
+void Server::init(int port, std::string pass)
+{
+	this->password = pass;
+	this->port = port;
+
+	set_server_socket();
+	std::cout << "Server Running. Waiting for connections" << std::endl;
+	while (!Server::Signal)
+	{
+		if (poll(&fds[0], fds.size(), -1) == -1)
+			throw(std::runtime_error("Poll failed."));
+		for(std::vector<struct pollfd>::iterator it = fds.begin(); it != fds.end(); it++)
+		{
+			if (it->revents & POLLIN)
+				accept_new_client();
+			else
+				recieveNewData(it->fd);
+		}
+	}
+	close_fds();
+}
 
 void Server::set_server_socket()
 {
