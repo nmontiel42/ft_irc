@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/15 11:25:52 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/10/17 14:45:12 by nmontiel         ###   ########.fr       */
+/*   Created: Invalid date        by                   #+#    #+#             */
+/*   Updated: 2024/10/17 15:23:39 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ class Server
         void addChannel(Channel newChannel);
         void addFds(pollfd newFd);
 
-        // Server functions
+        //*----------------------Server functions----------------------*//
         void accept_new_client();
         void set_server_socket();
 
@@ -97,6 +97,10 @@ class Server
         void set_username(std::string &username, int fd);
         void set_nickname(std::string cmd, int fd); 
         
+        //*----------------------JOIN----------------------*//
+        int SplitJoin(std::vector<std::pair<std::string, std::string>> &token, std::string cmd, int fd);
         
+        //*----------------------INVITE----------------------*//
+        void invite(std::string &cmd, int &fd);
 };
 
