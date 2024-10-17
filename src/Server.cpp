@@ -6,7 +6,7 @@
 /*   By: anttorre <anttorre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2024/10/17 15:33:33 by anttorre         ###   ########.fr       */
+/*   Updated: 2024/10/17 16:51:49 by anttorre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -184,6 +184,11 @@ void Server::accept_new_client(){
     clients.push_back(newClient);
     fds.push_back(new_cli);
     std::cout <<"New client <" << incoming_fd << "> connected from " << newClient.getIpAdd() << std::endl;    
+}
+
+void recieveNewData(int fd)
+{
+	
 }
 
 /* ------------------SPLIT FUNCTIONS------------------*/
