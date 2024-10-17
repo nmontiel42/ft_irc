@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/15 11:36:54 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/10/17 14:36:08 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/10/17 15:06:32 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -297,4 +297,30 @@ void Server::client_authen(int fd, std::string cmd)
     }
     else
     _sendResponse(getClient(fd)->getNickName() + ": You are already registered!\r\n", fd);
+}
+
+void Server::set_username(std::string &cmd, int fd)
+{
+    std::vector<std::string> splited_cmd = split_cmd(cmd);
+
+    Client *cli = getClient(fd);
+    if ((cli && splited_cmd.size() < 5))
+    {
+        _sendResponse(cli->getNickName() + ": Not enough parameters. User <username> <0> <*> <password>\r\n", fd);
+        return ;
+    }
+    if (!cli || !cli->getRegistered())
+        _sendResponse(std::string("*") + "You are not registered!\r\n", fd);
+    else if (cli && !cli->getUserName().empty())
+    {
+        _sendResponse(cli->getNickName() + ": You are already registered!\r\n", fd);
+        return ;
+    }
+    else
+        cli->setUserName(splited_cmd[1]);
+    if (cli && cli->getRegistered() && !cli->getUserName().empty() && !cli->getNickName().empty() && cli->getNickName() != "*" && !cli->getLogedIn())
+    {
+        cli->setLogedIn(true);
+        _sendResponse(cli->getNickName() + ": Welcome to the IRC server!\r\n", fd);
+    }
 }
