@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anttorre <anttorre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/15 11:36:54 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/10/17 14:36:08 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/10/17 14:45:32 by anttorre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,24 +39,24 @@ Server::~Server()
 {
 }
 
-/*------------------GETTERS------------------*/
+/*  GETTERS */
 
-int Server::getFd()
+int Server::GetFd()
 {
     return this->server_fdsocket;
 }
 
-int Server::getPort()
+int Server::GetPort()
 {
     return this->port;
 }
 
-std::string Server::getPassword()
+std::string Server::GetPassword()
 {
     return this->password;
 }
 
-Client *Server::getClient(int fd)
+Client *Server::GetClient(int fd)
 {
     for (size_t i = 0; i < this->clients.size(); i++) {
         if (this->clients[i].getFd() == fd)
@@ -65,7 +65,7 @@ Client *Server::getClient(int fd)
     return NULL;
 }
 
-Client *Server::getClientNick(std::string nickname)
+Client *Server::GetClientNick(std::string nickname)
 {
     for(size_t i = 0; i < this->clients.size(); i++) {
         if (this->clients[i].getNickName() == nickname)
@@ -74,7 +74,7 @@ Client *Server::getClientNick(std::string nickname)
     return NULL;
 }
 
-Channel *Server::getChannel(std::string name)
+Channel *Server::GetChannel(std::string name)
 {
     for(size_t i = 0; i < this->channels.size(); i++) {
         if (this->channels[i].getName() == name)
@@ -83,40 +83,61 @@ Channel *Server::getChannel(std::string name)
     return NULL;
 }
 
-/*------------------SETTERS------------------*/
+/*  SETTERS */
 
-void Server::setPort(int port)
+void Server::SetPort(int port)
 {
     this->port = port;
 }
 
-void Server::setFd(int server_fdsocket)
+void Server::SetFd(int server_fdsocket)
 {
     this->server_fdsocket = server_fdsocket;
 }
 
-void Server::setPassword(std::string password)
+void Server::SetPassword(std::string password)
 {
     this->password = password;
 }
 
-void Server::addClient(Client newClient)
+void Server::AddClient(Client newClient)
 {
     this->clients.push_back(newClient);
 }
 
-void Server::addChannel(Channel newChannel)
+void Server::AddChannel(Channel newChannel)
 {
     this->channels.push_back(newChannel);
 }
 
-void Server::addFds(pollfd newFd)
+void Server::AddFds(pollfd newFd)
 {
     this->fds.push_back(newFd);
 }
 
 
-/*  FUNCIONES   */
+/*  FUNCTIONS   */
+void Server::init(int port, std::string pass)
+{
+	this->password = pass;
+	this->port = port;
+	
+	set_server_socket();
+	std::cout << "Server Running. Waiting for connections" << std::endl;
+	while (!Server::Signal)
+	{
+		if (poll(&fds[0], fds.size(), -1) == -1)
+			throw(std::runtime_error("Poll failed."));
+		for(std::vector<struct pollfd>::iterator it = fds.begin(); it != fds.end(); it++)
+		{
+			if (it->revents & POLLIN)
+				accept_new_client();
+			else
+				recieveNewData(it->fd);
+		}
+	}
+	close_fds();
+}
 
 void Server::set_server_socket()
 {
@@ -163,38 +184,7 @@ void Server::accept_new_client(){
     std::cout <<"New client <" << incoming_fd << "> connected from " << newClient.getIpAdd() << std::endl;    
 }
 
-/* ------------------SPLIT FUNCTIONS------------------*/
-
-std::vector<std::string> Server::split_cmd(std::string &cmd)
-{
-    std::vector<std::string> vec;
-    std::istringstream stm(cmd);
-    std::string token;
-    while (stm >> token)
-    {
-        vec.push_back(token);
-        token.clear();
-    }
-    return vec;
-}
-
-std::vector<std::string> Server::split_recievedBuffer(std::string str)
-{
-    std::vector<std::string> vec;
-    std::istringstream stm(str);
-    std::string line;
-    while(std::getline(stm, line))
-    {
-        size_t pos = line.find_first_of("\r\n");
-        if (pos != std::string::npos)
-            line = line.substr(0, pos);
-        vec.push_back(line);
-    }
-    return vec;
-}
-
-
-/*------------------SEND FUNCTIONS------------------*/
+/*  SEND FUNCTIONS  */
 
 void Server::_sendResponse(std::string response, int fd)
 {
@@ -220,7 +210,7 @@ void Server::senderror(std::string clientname, std::string channelname, int fd, 
         std::cerr << "send() failed" << std::endl;
 }
 
-/*------------------SIGNALS AND CLOSE------------------*/
+/*  SIGNALS AND CLOSE   */
 
 void Server::Signalhandler(int signum)
 {
@@ -241,60 +231,4 @@ void Server::close_fds()
         std::cout << "Server <" << server_fdsocket << "> Disconnected" << std::endl;
         close(server_fdsocket);
     }
-}
-
-/*------------------AUTHENTICATION SYSTEM------------------*/
-
-bool Server::notRegistered(int fd)
-{
-    if (!getClient(fd) || getClient(fd)->getNickName().empty() || getClient(fd)->getUserName().empty() || getClient(fd)->getNickName() == "*" || !getClient(fd)->getLogedIn())
-        return false;
-    return true;
-}
-
-bool Server::nickNameInUse(std::string &nickname)
-{
-    for (size_t i = 0; i < this->clients.size(); i++)
-    {
-        if (this->clients[i].getNickName() == nickname)
-            return true;
-    }
-    return false;
-}
-
-bool Server::isValidNickName(std::string &nickname)
-{
-    if (!nickname.empty() && (nickname[0] == '&' || nickname[0] == '#' || nickname[0] == ':'))
-        return false;
-    for (size_t i = 0; i < nickname.size(); i++)
-    {
-        if (!std::isalnum(nickname[i]) && nickname[i] != '_')
-            return false;
-    }
-    return true;
-}
-
-void Server::client_authen(int fd, std::string cmd)
-{
-    Client *cli = getClient(fd);
-    cmd = cmd.substr(4);
-    size_t pos = cmd.find_first_not_of("\t\v ");
-    if (pos < cmd.size())
-    {
-        cmd = cmd.substr(pos);
-        if (cmd[0] == ':')
-            cmd.erase(cmd.begin());
-    }
-    if (pos == std::string::npos || cmd.empty())
-        _sendResponse(std::string("*") + ": Not enough parrameters.\r\n", fd);
-    else if(!cli->getRegistered())
-    {
-        std::string pass = cmd;
-        if (pass == password)
-            cli->setRegistered(true);
-        else
-            _sendResponse(std::string("*") + ": Password incorect!\r\n", fd);
-    }
-    else
-    _sendResponse(getClient(fd)->getNickName() + ": You are already registered!\r\n", fd);
 }
