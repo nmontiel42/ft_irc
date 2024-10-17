@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/15 10:53:07 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/10/17 13:03:40 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/10/17 17:56:48 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,7 @@ int main (int argc, char **argv)
             std::cout << "Invalid Password / Port number" << std::endl;
             return 1;
         }
-        /*
-            Iniciar servidor
-        */
+        ser.init(std::atoi(argv[1]), argv[2]);
     }
     catch(const std::exception& e)
     {
