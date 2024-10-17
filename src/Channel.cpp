@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/16 15:38:55 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/10/17 13:32:08 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/10/17 13:39:17 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -244,7 +244,7 @@ void Channel::setTopicRestriction(bool value)
     this->topic_restriction = value;
 }
 
-void Channel::setModeAtindex(size_t index, bool mode)
+void Channel::setModeAtIndex(size_t index, bool mode)
 {
     modes[index].second = mode;
 }

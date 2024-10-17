@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/15 11:25:52 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/10/17 13:33:14 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/10/17 13:44:46 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,10 +90,10 @@ class Server
         void close_fds();
 
         //*----------------------Authentification System----------------------*//
-        bool notregistered(int fd);
+        bool notRegistered(int fd);
         bool nickNameInUse(std::string &);
-        bool is_validNickname(std::string &);
-        //void client_authen(int fd, std::string pass);
+        bool isValidNickName(std::string &);
+        void client_authen(int fd, std::string pass);
         //void set_username(std::string &username, int fd);
         //void set_nickname(std::string cmd, int fd); 
         

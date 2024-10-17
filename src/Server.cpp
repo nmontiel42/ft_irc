@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/15 11:36:54 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/10/17 13:31:26 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/10/17 14:26:03 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -245,9 +245,56 @@ void Server::close_fds()
 
 /*------------------AUTHENTICATION SYSTEM------------------*/
 
-bool Server::notregistered(int fd)
+bool Server::notRegistered(int fd)
 {
     if (!getClient(fd) || getClient(fd)->getNickName().empty() || getClient(fd)->getUserName().empty() || getClient(fd)->getNickName() == "*" || !getClient(fd)->getLogedIn())
         return false;
     return true;
+}
+
+bool Server::nickNameInUse(std::string &nickname)
+{
+    for (size_t i = 0; i < this->clients.size(); i++)
+    {
+        if (this->clients[i].getNickName() == nickname)
+            return true;
+    }
+    return false;
+}
+
+bool Server::isValidNickName(std::string &nickname)
+{
+    if (!nickname.empty() && (nickname[0] == '&' || nickname[0] == '#' || nickname[0] == ':'))
+        return false;
+    for (size_t i = 0; i < nickname.size(); i++)
+    {
+        if (!std::isalnum(nickname[i]) && nickname[i] != '_')
+            return false;
+    }
+    return true;
+}
+
+void Server::client_authen(int fd, std::string cmd)
+{
+    Client *cli = getClient(fd);
+    cmd = cmd.substr(4);
+    size_t pos = cmd.find_first_not_of("\t\v ");
+    if (pos < cmd.size())
+    {
+        cmd = cmd.substr(pos);
+        if (cmd[0] == ':')
+            cmd.erase(cmd.begin());
+    }
+    if (pos == std::string::npos || cmd.empty())
+        _sendResponse(std::string("*") + ": Not enough parrameters.\r\n", fd);
+    else if(!cli->getRegistered())
+    {
+        std::string pass = cmd;
+        if (pass == password)
+            cli->setRegistered(true);
+        else
+            _sendResponse(std::string("*") + ": Password incorect!\r\n", fd);
+    }
+    else
+    _sendResponse(getClient(fd)->getNickName() + ": You are already registered!\r\n", fd);
 }
