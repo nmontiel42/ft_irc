@@ -80,12 +80,12 @@ class Server
         std::vector<std::string> split_recievedBuffer(std::string);
         //void parse_exec_cmd(std::string &cmd, int fd);
 
-        //*----------------------Send functions (done)----------------------*//
+        //*----------------------Send functions----------------------*// (done)
         void _sendResponse(std::string response, int fd);
         void senderror(std::string clientname, int fd, std::string);
         void senderror(std::string clientname, std::string channelname, int fd, std::string msg);
 
-        //*----------------------Close and Signals (done)----------------------*//
+        //*----------------------Close and Signals----------------------*// (done)
         static void Signalhandler(int signum);
         void close_fds();
 
