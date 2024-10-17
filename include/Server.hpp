@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2024/10/17 15:23:39 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/10/17 15:24:18 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,6 @@ class Server
         int SplitJoin(std::vector<std::pair<std::string, std::string>> &token, std::string cmd, int fd);
         
         //*----------------------INVITE----------------------*//
-        void invite(std::string &cmd, int &fd);
+        void invite(std::string &cmd, int &fd); 
 };
 
