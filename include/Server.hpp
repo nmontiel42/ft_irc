@@ -6,10 +6,9 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2024/10/17 15:16:52 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/10/17 15:22:10 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #pragma once
 
@@ -57,7 +56,6 @@ class Server
         Server &operator=(Server const &);
         
         //*----------------------Getters----------------------*// (done)
-        //*----------------------Getters----------------------*// (done)
         int getFd();
         int getPort();
         std::string getPassword();
@@ -83,24 +81,17 @@ class Server
         //void parse_exec_cmd(std::string &cmd, int fd);
 
         //*----------------------Send functions----------------------*// (done)
-        //*----------------------Send functions----------------------*// (done)
         void _sendResponse(std::string response, int fd);
         void senderror(std::string clientname, int fd, std::string);
         void senderror(std::string clientname, std::string channelname, int fd, std::string msg);
 
-        //*----------------------Close and Signals----------------------*// (done)
         //*----------------------Close and Signals----------------------*// (done)
         static void Signalhandler(int signum);
         void close_fds();
 
         //*----------------------Authentification System----------------------*//
         bool notRegistered(int fd);
-        bool notRegistered(int fd);
         bool nickNameInUse(std::string &);
-        bool isValidNickName(std::string &);
-        void client_authen(int fd, std::string pass);
-        void set_username(std::string &username, int fd);
-        void set_nickname(std::string cmd, int fd); 
         bool isValidNickName(std::string &);
         void client_authen(int fd, std::string pass);
         void set_username(std::string &username, int fd);
@@ -109,5 +100,7 @@ class Server
         //*----------------------JOIN----------------------*//
         int SplitJoin(std::vector<std::pair<std::string, std::string>> &token, std::string cmd, int fd);
         
+        //*----------------------INVITE----------------------*//
+        void invite(std::string &cmd, int &fd);
 };
 

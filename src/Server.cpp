@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2024/10/17 15:15:35 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/10/17 15:22:28 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -246,7 +246,6 @@ void Server::close_fds()
 
 /*------------------AUTHENTICATION SYSTEM------------------*/
 
-bool Server::notRegistered(int fd)
 bool Server::notRegistered(int fd)
 {
     if (!getClient(fd) || getClient(fd)->getNickName().empty() || getClient(fd)->getUserName().empty() || getClient(fd)->getNickName() == "*" || !getClient(fd)->getLogedIn())
