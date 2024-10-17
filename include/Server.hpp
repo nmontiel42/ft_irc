@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/15 11:25:52 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/10/17 12:52:28 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/10/17 13:17:17 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,12 +82,17 @@ class Server
         void accept_new_client();
         void set_server_socket();
 
+        // Split and Parse functions
+        std::vector<std::string> split_cmd(std::string &str);
+        std::vector<std::string> split_recievedBuffer(std::string str);
+        //void parse_exec_cmd(std::string &cmd, int fd);
+
         //Send functions (done)
         void _sendResponse(std::string response, int fd);
         void senderror(std::string clientname, int fd, std::string msg);
         void senderror(std::string clientname, std::string channelname, int fd, std::string msg);
 
-        // Close and Signals
+        // Close and Signals (done)
         static void Signalhandler(int signum);
         void close_fds();
 };

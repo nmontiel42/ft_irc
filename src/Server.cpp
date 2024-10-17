@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/15 11:36:54 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/10/17 13:01:20 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/10/17 13:14:52 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,6 +162,36 @@ void Server::accept_new_client(){
     fds.push_back(new_cli);
     std::cout <<"New client <" << incoming_fd << "> connected from " << newClient.getIpAdd() << std::endl;    
 }
+
+/*  SPLIT FUNCTIONS */
+std::vector<std::string> Server::split_cmd(std::string &cmd)
+{
+    std::vector<std::string> vec;
+    std::istringstream stm(cmd);
+    std::string token;
+    while (stm >> token)
+    {
+        vec.push_back(token);
+        token.clear();
+    }
+    return vec;
+}
+
+std::vector<std::string> Server::split_recievedBuffer(std::string str)
+{
+    std::vector<std::string> vec;
+    std::istringstream stm(str);
+    std::string line;
+    while(std::getline(stm, line))
+    {
+        size_t pos = line.find_first_of("\r\n");
+        if (pos != std::string::npos)
+            line = line.substr(0, pos);
+        vec.push_back(line);
+    }
+    return vec;
+}
+
 
 /*  SEND FUNCTIONS  */
 
