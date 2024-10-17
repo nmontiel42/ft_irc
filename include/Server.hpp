@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/15 11:25:52 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/10/17 14:36:58 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/10/17 14:41:12 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,8 +70,8 @@ class Server
         void addClient(Client newClient);
         void addChannel(Channel newChannel);
         void addFds(pollfd newFd);
-        
-        //*----------------------Server functions----------------------*//
+
+        // Server functions
         void accept_new_client();
         void set_server_socket();
 

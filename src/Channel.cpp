@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/16 15:38:55 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/10/17 13:39:17 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/10/17 14:40:26 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -200,42 +200,42 @@ Client* Channel::getClientInChannel(std::string name)
 
 //*------------------SETTERS------------------*//
 
-void Channel::SetInvitOnly(int invit_only)
+void Channel::setInvitOnly(int invit_only)
 {
     this->invit_only = invit_only;
 }
 
-void Channel::SetTopic(int topic)
+void Channel::setTopic(int topic)
 {
     this->topic = topic;
 }
 
-void Channel::SetTime(std::string time)
+void Channel::setTime(std::string time)
 {
     this->time_creation = time;
 }
 
-void Channel::SetKey(int key)
+void Channel::setKey(int key)
 {
     this->key = key;
 }
 
-void Channel::SetLimit(int limit)
+void Channel::setLimit(int limit)
 {
     this->limit = limit;
 }
 
-void Channel::SetTopicName(std::string topic_name)
+void Channel::setTopicName(std::string topic_name)
 {
     this->topic_name = topic_name;
 }
  
-void Channel::SetPassword(std::string password)
+void Channel::setPassword(std::string password)
 {
     this->password = password;
 }
 
-void Channel::SetName(std::string name)
+void Channel::setName(std::string name)
 {
     this->name = name;
 }
