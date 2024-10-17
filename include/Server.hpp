@@ -55,7 +55,7 @@ class Server
         ~Server();
         Server &operator=(Server const &);
         
-        //*---------------------- Getters----------------------*// (done)
+        //*----------------------Getters----------------------*// (done)
         int getFd();
         int getPort();
         std::string getPassword();
@@ -63,20 +63,15 @@ class Server
         Client *getClientNick(std::string nickame);
         Channel *getChannel(std::string name);
 
-        //* Setters *// (done)
+        //*----------------------Setters----------------------*// (done)
         void setPort(int port);
         void setFd(int server_fdsocket);
         void setPassword(std::string password);
         void addClient(Client newClient);
         void addChannel(Channel newChannel);
         void addFds(pollfd newFd);
-
-        // Part of the authentication system 
         
-        //void set_username(std::string &username, int fd);
-        //void set_nickname(std::string cmd, int fd); 
-        
-        // Server functions
+        //*----------------------Server functions----------------------*//
         void accept_new_client();
         void set_server_socket();
 
