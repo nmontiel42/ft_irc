@@ -5,10 +5,11 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/15 11:36:54 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/10/17 15:06:32 by nmontiel         ###   ########.fr       */
+/*   Created: Invalid date        by                   #+#    #+#             */
+/*   Updated: 2024/10/17 15:15:35 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #include "../include/Server.hpp"
 
@@ -245,6 +246,7 @@ void Server::close_fds()
 
 /*------------------AUTHENTICATION SYSTEM------------------*/
 
+bool Server::notRegistered(int fd)
 bool Server::notRegistered(int fd)
 {
     if (!getClient(fd) || getClient(fd)->getNickName().empty() || getClient(fd)->getUserName().empty() || getClient(fd)->getNickName() == "*" || !getClient(fd)->getLogedIn())
