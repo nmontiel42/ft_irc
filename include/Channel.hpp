@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/16 14:39:19 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/10/17 11:00:09 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/10/17 12:41:29 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,18 +46,18 @@ class Channel
         int getLimit();
         int getClientsNumber();
         bool gettopic_restriction() const;
-        //bool getModeAtindex(size_t index);
-        //bool clientInChannel(std::string &nick);
+        bool getModeAtindex(size_t index);
+        bool clientInChannel(std::string &nick);
         std::string getTopicName();
         std::string getPassword();
         std::string getName();
         std::string getTime();
         std::string get_creationtime();
         std::string getModes();
-        //std::string clientChannel_list();
+        std::string clientChannel_list();
         Client *get_client(int fd);
         Client *get_admin(int fd);
-        //Client *getClientInChannel(std::string name);
+        Client *getClientInChannel(std::string name);
 
         //* Setters *//
         void SetInvitOnly(int invit_only);

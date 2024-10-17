@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: antferna <antferna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/15 11:36:54 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/10/16 16:07:23 by antferna         ###   ########.fr       */
+/*   Updated: 2024/10/17 12:42:30 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,20 +68,20 @@ Client *Server::GetClient(int fd)
 Client *Server::GetClientNick(std::string nickname)
 {
     for(size_t i = 0; i < this->clients.size(); i++) {
-        if (this->clients[i].getNickname() == nickname)
-            return &this->clients[i]
+        if (this->clients[i].getNickName() == nickname)
+            return &this->clients[i];
     }
     return NULL;
 }
 
-/* Channel *Server::GetChannel(std::string name)
+Channel *Server::GetChannel(std::string name)
 {
     for(size_t i = 0; i < this->channels.size(); i++) {
-        if (this->channels[i].GetName() == name)
+        if (this->channels[i].getName() == name)
             return &this->channels[i];
     }
     return NULL;
-} */
+}
 
 /*  SETTERS */
 
@@ -105,10 +105,10 @@ void Server::AddClient(Client newClient)
     this->clients.push_back(newClient);
 }
 
-/* void Server::AddChannel(Channel newChannel)
+void Server::AddChannel(Channel newChannel)
 {
     this->channels.push_back(newChannel);
-} */
+}
 
 void Server::AddFds(pollfd newFd)
 {
@@ -129,7 +129,7 @@ void Server::set_server_socket()
     
     if (server_fdsocket == -1)
         throw(std::runtime_error("failed to create socket"));
-    if (setsockopt(server_fdsocket, SOL_SOCKET, SO_REUSEADDR, &en, sizeof(end)) == -1)
+    if (setsockopt(server_fdsocket, SOL_SOCKET, SO_REUSEADDR, &en, sizeof(en)) == -1)
         throw(std::runtime_error("failed to set option (SO_REUSEADDR) on socket"));
     if (fcntl(server_fdsocket, F_SETFL, O_NONBLOCK) == -1)
         throw(std::runtime_error("failed to set option (O_NONBLOCK) on socket"));
@@ -162,3 +162,30 @@ void Server::accept_new_client(){
     fds.push_back(new_cli);
     std::cout <<"New client <" << incoming_fd << "> connected from " << newClient.getIpAdd() << std::endl;    
 }
+
+/*  SEND FUNCTIONS  */
+
+void Server::_sendResponse(std::string response, int fd)
+{
+    if (send(fd, response.c_str(), response.size(), 0) == -1)
+        std::cerr << "Response send() failed" << std::endl;
+}
+
+void Server::senderror(std::string clientname, int fd, std::string msg)
+{
+    std::stringstream ss;
+    ss << "Error: " << clientname << msg;
+    std::string resp = ss.str();
+    if (send(fd, resp.c_str(), resp.size(), 0) == -1)
+        std::cerr << "send() failed" << std::endl;
+}
+
+void Server::senderror(std::string clientname, std::string channelname, int fd, std::string msg)
+{
+    std::stringstream ss;
+    ss << "Error: " << clientname << "" << channelname << msg;
+    std::string resp = ss.str();
+    if (send(fd, resp.c_str(), resp.size(), 0) == -1)
+        std::cerr << "send() failed" << std::endl;
+}
+

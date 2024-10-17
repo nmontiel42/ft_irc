@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: antferna <antferna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/16 12:39:40 by antferna          #+#    #+#             */
-/*   Updated: 2024/10/16 15:44:14 by antferna         ###   ########.fr       */
+/*   Updated: 2024/10/17 11:44:37 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ Client &Client::operator=(Client const &other)
     if (this != &other)
     {
         this->fd = other.fd;
-        this->username = other.name;
+        this->username = other.username;
         this->nickname = other.nickname;
         this->buffer = other.buffer;
         this->ipadd = other.ipadd;
@@ -87,7 +87,7 @@ bool Client::getInviteChannel(std::string &ChName) {
 }
 
 std::string Client::getHostName() {
-    return this->getNickName() + "!" + this->getUserName() + "@" + this->getIpadd();
+    return this->getNickName() + "!" + this->getUserName() + "@" + this->getIpAdd();
 }
 
 // SETTERS
@@ -96,7 +96,7 @@ void Client::setFd(int fd) {
     this->fd = fd;
 }
 
-void Client::setName(std::string& username) {
+void Client::setUserName(std::string& username) {
     this->username = username;
 }
 

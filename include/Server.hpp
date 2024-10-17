@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: antferna <antferna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/15 11:25:52 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/10/16 15:50:17 by antferna         ###   ########.fr       */
+/*   Updated: 2024/10/17 12:43:54 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@
 #include <ctime>
 
 #include "Client.hpp"
-//#include "Channel.hpp"
+#include "Channel.hpp"
 
 class Client;
 class Channel;
@@ -50,36 +50,44 @@ class Server
         struct pollfd new_cli;
         
     public:
+        /* (Done)*/
         Server();
         Server(Server const &);
         ~Server();
         Server &operator=(Server const &);
         
-        //* Getters *//
+        //* Getters *// (done)
 
         int GetFd();
         int GetPort();
         std::string GetPassword();
         Client *GetClient(int fd);
         Client *GetClientNick(std::string nickame);
-        //Channel *GetChannel(std::string name);
+        Channel *GetChannel(std::string name);
 
-        //* Setters *//
+        //* Setters *// (done)
         void SetPort(int port);
         void SetFd(int server_fdsocket);
         void SetPassword(std::string password);
         void AddClient(Client newClient);
-        //void AddChannel(Channel newChannel);
+        void AddChannel(Channel newChannel);
         void AddFds(pollfd newFd);
 
-        // Part of the authentication system
-        /* void set_username(std::string &username, int fd);
-        void set_nickname(std::string cmd, int fd); */
+        // Part of the authentication system 
         
-        //* Functions *//
-        void set_server_socket();
-
+        //void set_username(std::string &username, int fd);
+        //void set_nickname(std::string cmd, int fd); 
+        
         // Server functions
         void accept_new_client();
+        void set_server_socket();
+
+        //Send functions (done)
+        void _sendResponse(std::string response, int fd);
+        void senderror(std::string clientname, int fd, std::string msg);
+        void senderror(std::string clientname, std::string channelname, int fd, std::string msg);
+
+        // Close and Signals
+        
 };
 

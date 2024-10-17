@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/16 15:38:55 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/10/17 11:03:01 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/10/17 12:41:56 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,11 +88,11 @@ bool Channel::gettopic_restriction() const
     return this->topic_restriction;
 }
 
-/* bool Channel::getModeAtindex(size_t index)
+bool Channel::getModeAtindex(size_t index)
 {
     return modes[index].second;
-} */
-/* bool Channel::clientInChannel(std::string &nick)
+}
+bool Channel::clientInChannel(std::string &nick)
 {
 	for(size_t i = 0; i < clients.size(); i++)
     {
@@ -105,7 +105,7 @@ bool Channel::gettopic_restriction() const
 			return true;
 	}
 	return false;
-} */
+}
 
 std::string Channel::getTopicName()
 {
@@ -145,7 +145,7 @@ std::string Channel::getModes()
 	return mode;
 }
 
-/* std::string Channel::clientChannel_list()
+ std::string Channel::clientChannel_list()
 {
 	std::string list;
 	for(size_t i = 0; i < admins.size(); i++){
@@ -161,7 +161,7 @@ std::string Channel::getModes()
 			list += " ";
 	}
 	return list;
-} */
+}
 
 Client *Channel::get_client(int fd)
 {
@@ -183,7 +183,7 @@ Client *Channel::get_admin(int fd)
 	return NULL;
 }
 
-/* Client* Channel::getClientInChannel(std::string name)
+Client* Channel::getClientInChannel(std::string name)
 {
 	for (std::vector<Client>::iterator it = clients.begin(); it != clients.end(); ++it)
     {
@@ -196,7 +196,7 @@ Client *Channel::get_admin(int fd)
 			return &(*it);
 	}
 	return NULL;
-} */
+}
 
 // SETTERS
 
