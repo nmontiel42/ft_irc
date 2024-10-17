@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/15 11:36:54 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/10/17 12:42:30 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/10/17 13:01:20 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -189,3 +189,25 @@ void Server::senderror(std::string clientname, std::string channelname, int fd, 
         std::cerr << "send() failed" << std::endl;
 }
 
+/*  SIGNALS AND CLOSE   */
+
+void Server::Signalhandler(int signum)
+{
+    (void)signum;
+    std::cout << std::endl << "Signal Received!" << std::endl;
+    Server::Signal = true;
+}
+
+void Server::close_fds()
+{
+    for(size_t i = 0; i < clients.size(); i++)
+    {
+        std::cout << "Client <" << clients[i]. getFd() << "> Disconnected" << std::endl;
+        close(clients[i].getFd());
+    }
+    if (server_fdsocket != -1)
+    {
+        std::cout << "Server <" << server_fdsocket << "> Disconnected" << std::endl;
+        close(server_fdsocket);
+    }
+}

@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/15 11:25:52 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/10/17 12:43:54 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/10/17 12:52:28 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,7 @@ class Server
         void senderror(std::string clientname, std::string channelname, int fd, std::string msg);
 
         // Close and Signals
-        
+        static void Signalhandler(int signum);
+        void close_fds();
 };
 
