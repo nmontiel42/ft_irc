@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2024/10/17 15:40:47 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/10/17 16:12:21 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -329,7 +329,7 @@ void Server::set_username(std::string &cmd, int fd)
     Client *cli = getClient(fd);
     if ((cli && splited_cmd.size() < 5))
     {
-        _sendResponse(cli->getNickName() + ": Not enough parameters. User <username> <0> <*> <password>\r\n", fd);
+        _sendResponse(cli->getNickName() + ": Not enough parameters. Usage: USER <Username> <Nickname> <password> <:Name>\r\n", fd);
         return ;
     }
     if (!cli || !cli->getRegistered())
@@ -375,7 +375,42 @@ void Server::set_nickname(std::string nick, int fd)
     }
     if (!isValidNickName(nick))
     {
-        _sendResponse
+        _sendResponse(std::string(nick) + ": Erroneus nickname.\r\n", fd);
+        return ;
     }
-    
+    else
+    {
+        if (cli && cli->getRegistered())
+        {
+            std::string oldNick = cli->getNickName();
+            cli->setNickname(nick);
+            for(size_t i = 0; i < channels.size(); i++)
+            {
+                Client *cl = channels[i].getClientInChannel(oldNick);
+                if (cl)
+                    cl->setNickname(nick);
+            }
+            if (!oldNick.empty() && oldNick != nick)
+            {
+                if (oldNick == "*" && !cli->getUserName().empty())
+                {
+                    //First nickname
+                    cli->setLogedIn(true);
+                    _sendResponse(cli->getNickName() + ": Welcome to the IRC server!\r\n", fd);
+                    _sendResponse(cli->getNickName() + ": Nickname established: " + nick + "\r\n", fd);
+                }
+                else
+                    //change username
+                    _sendResponse(oldNick + ": Nickname changed: " + nick + "\r\n", fd);
+                return ;
+            }
+        }
+        else if (cli && !cli->getRegistered())
+            _sendResponse(nick + ": You are not registered!\r\n", fd);
+    }
+    if (cli && cli->getRegistered() && !cli->getUserName().empty() && !cli->getNickName().empty() && cli->getNickName() != "*" && !cli->getLogedIn())
+    {
+        cli->setLogedIn(true);
+        _sendResponse(cli->getNickName() + ": Welcome to the IRC server!\r\n", fd);
+    }
 }
