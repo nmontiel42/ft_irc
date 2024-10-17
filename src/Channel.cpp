@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/16 15:38:55 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/10/17 12:41:56 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/10/17 13:32:08 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ Channel::~Channel()
 {
 }
 
-//  GETTERS
+//*------------------GETTERS------------------*//
 
 int Channel::getInvitOnly()
 {
@@ -83,7 +83,7 @@ int Channel::getClientsNumber()
     return this->clients.size() + this->admins.size();
 }
 
-bool Channel::gettopic_restriction() const
+bool Channel::getTopicRestriction() const
 {
     return this->topic_restriction;
 }
@@ -127,7 +127,7 @@ std::string Channel::getTime()
     return this->time_creation;
 }
 
-std::string Channel::get_creationtime()
+std::string Channel::getCreationTime()
 {
     return created_at;
 }
@@ -145,7 +145,7 @@ std::string Channel::getModes()
 	return mode;
 }
 
- std::string Channel::clientChannel_list()
+ std::string Channel::clientChannelList()
 {
 	std::string list;
 	for(size_t i = 0; i < admins.size(); i++){
@@ -163,7 +163,7 @@ std::string Channel::getModes()
 	return list;
 }
 
-Client *Channel::get_client(int fd)
+Client *Channel::getClient(int fd)
 {
 	for (std::vector<Client>::iterator it = clients.begin(); it != clients.end(); ++it)
     {
@@ -173,7 +173,7 @@ Client *Channel::get_client(int fd)
 	return NULL;
 }
 
-Client *Channel::get_admin(int fd)
+Client *Channel::getAdmin(int fd)
 {
 	for (std::vector<Client>::iterator it = admins.begin(); it != admins.end(); ++it)
     {
@@ -198,7 +198,7 @@ Client* Channel::getClientInChannel(std::string name)
 	return NULL;
 }
 
-// SETTERS
+//*------------------SETTERS------------------*//
 
 void Channel::SetInvitOnly(int invit_only)
 {
@@ -239,7 +239,7 @@ void Channel::SetName(std::string name)
 {
     this->name = name;
 }
-void Channel::set_topicRestriction(bool value)
+void Channel::setTopicRestriction(bool value)
 {
     this->topic_restriction = value;
 }
@@ -249,7 +249,7 @@ void Channel::setModeAtindex(size_t index, bool mode)
     modes[index].second = mode;
 }
 
-void Channel::set_creationtime()
+void Channel::setCreationTime()
 {
 	std::time_t _time = std::time(NULL); //actual time in seconds
 	std::ostringstream oss;

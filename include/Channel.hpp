@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/16 14:39:19 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/10/17 12:41:29 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/10/17 13:31:47 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,27 +39,27 @@ class Channel
         Channel &operator=(const Channel &);
         ~Channel();
 
-        //* Getters *//
+        //*------------------Getters------------------*//
         int getInvitOnly();
         int getTopic();
         int getKey();
         int getLimit();
         int getClientsNumber();
-        bool gettopic_restriction() const;
+        bool getTopicRestriction() const;
         bool getModeAtindex(size_t index);
         bool clientInChannel(std::string &nick);
         std::string getTopicName();
         std::string getPassword();
         std::string getName();
         std::string getTime();
-        std::string get_creationtime();
+        std::string getCreationTime();
         std::string getModes();
-        std::string clientChannel_list();
-        Client *get_client(int fd);
-        Client *get_admin(int fd);
+        std::string clientChannelList();
+        Client *getClient(int fd);
+        Client *getAdmin(int fd);
         Client *getClientInChannel(std::string name);
 
-        //* Setters *//
+        //*------------------Setters------------------*//
         void SetInvitOnly(int invit_only);
         void SetTopic(int topic);
         void SetKey(int key);
@@ -68,7 +68,7 @@ class Channel
         void SetPassword(std::string password);
         void SetName(std::string name);
         void SetTime(std::string time);
-        void set_topicRestriction(bool value);
+        void setTopicRestriction(bool value);
         void setModeAtindex(size_t index, bool mode);
-        void set_creationtime();
+        void setCreationTime();
 };

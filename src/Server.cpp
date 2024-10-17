@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/15 11:36:54 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/10/17 13:14:52 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/10/17 13:31:26 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,24 +39,24 @@ Server::~Server()
 {
 }
 
-/*  GETTERS */
+/*------------------GETTERS------------------*/
 
-int Server::GetFd()
+int Server::getFd()
 {
     return this->server_fdsocket;
 }
 
-int Server::GetPort()
+int Server::getPort()
 {
     return this->port;
 }
 
-std::string Server::GetPassword()
+std::string Server::getPassword()
 {
     return this->password;
 }
 
-Client *Server::GetClient(int fd)
+Client *Server::getClient(int fd)
 {
     for (size_t i = 0; i < this->clients.size(); i++) {
         if (this->clients[i].getFd() == fd)
@@ -65,7 +65,7 @@ Client *Server::GetClient(int fd)
     return NULL;
 }
 
-Client *Server::GetClientNick(std::string nickname)
+Client *Server::getClientNick(std::string nickname)
 {
     for(size_t i = 0; i < this->clients.size(); i++) {
         if (this->clients[i].getNickName() == nickname)
@@ -74,7 +74,7 @@ Client *Server::GetClientNick(std::string nickname)
     return NULL;
 }
 
-Channel *Server::GetChannel(std::string name)
+Channel *Server::getChannel(std::string name)
 {
     for(size_t i = 0; i < this->channels.size(); i++) {
         if (this->channels[i].getName() == name)
@@ -83,40 +83,40 @@ Channel *Server::GetChannel(std::string name)
     return NULL;
 }
 
-/*  SETTERS */
+/*------------------SETTERS------------------*/
 
-void Server::SetPort(int port)
+void Server::setPort(int port)
 {
     this->port = port;
 }
 
-void Server::SetFd(int server_fdsocket)
+void Server::setFd(int server_fdsocket)
 {
     this->server_fdsocket = server_fdsocket;
 }
 
-void Server::SetPassword(std::string password)
+void Server::setPassword(std::string password)
 {
     this->password = password;
 }
 
-void Server::AddClient(Client newClient)
+void Server::addClient(Client newClient)
 {
     this->clients.push_back(newClient);
 }
 
-void Server::AddChannel(Channel newChannel)
+void Server::addChannel(Channel newChannel)
 {
     this->channels.push_back(newChannel);
 }
 
-void Server::AddFds(pollfd newFd)
+void Server::addFds(pollfd newFd)
 {
     this->fds.push_back(newFd);
 }
 
 
-/*  FUNCIONES   */
+/*------------------SERVER FUNCTIONS------------------*/
 
 void Server::set_server_socket()
 {
@@ -163,7 +163,8 @@ void Server::accept_new_client(){
     std::cout <<"New client <" << incoming_fd << "> connected from " << newClient.getIpAdd() << std::endl;    
 }
 
-/*  SPLIT FUNCTIONS */
+/* ------------------SPLIT FUNCTIONS------------------*/
+
 std::vector<std::string> Server::split_cmd(std::string &cmd)
 {
     std::vector<std::string> vec;
@@ -193,7 +194,7 @@ std::vector<std::string> Server::split_recievedBuffer(std::string str)
 }
 
 
-/*  SEND FUNCTIONS  */
+/*------------------SEND FUNCTIONS------------------*/
 
 void Server::_sendResponse(std::string response, int fd)
 {
@@ -219,7 +220,7 @@ void Server::senderror(std::string clientname, std::string channelname, int fd, 
         std::cerr << "send() failed" << std::endl;
 }
 
-/*  SIGNALS AND CLOSE   */
+/*------------------SIGNALS AND CLOSE------------------*/
 
 void Server::Signalhandler(int signum)
 {
@@ -240,4 +241,13 @@ void Server::close_fds()
         std::cout << "Server <" << server_fdsocket << "> Disconnected" << std::endl;
         close(server_fdsocket);
     }
+}
+
+/*------------------AUTHENTICATION SYSTEM------------------*/
+
+bool Server::notregistered(int fd)
+{
+    if (!getClient(fd) || getClient(fd)->getNickName().empty() || getClient(fd)->getUserName().empty() || getClient(fd)->getNickName() == "*" || !getClient(fd)->getLogedIn())
+        return false;
+    return true;
 }
