@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/15 11:25:52 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/10/17 13:44:46 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/10/17 14:34:36 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,15 +63,20 @@ class Server
         Client *getClientNick(std::string nickame);
         Channel *getChannel(std::string name);
 
-        //*------------------Setters------------------*// (done)
+        //* Setters *// (done)
         void setPort(int port);
         void setFd(int server_fdsocket);
         void setPassword(std::string password);
         void addClient(Client newClient);
         void addChannel(Channel newChannel);
         void addFds(pollfd newFd);
-  
-        //*----------------------Server functions----------------------*//
+
+        // Part of the authentication system 
+        
+        //void set_username(std::string &username, int fd);
+        //void set_nickname(std::string cmd, int fd); 
+        
+        // Server functions
         void accept_new_client();
         void set_server_socket();
 

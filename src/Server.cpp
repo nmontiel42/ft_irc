@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/15 11:36:54 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/10/17 14:26:03 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/10/17 14:33:04 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +116,7 @@ void Server::addFds(pollfd newFd)
 }
 
 
-/*------------------SERVER FUNCTIONS------------------*/
+/*  FUNCIONES   */
 
 void Server::set_server_socket()
 {
