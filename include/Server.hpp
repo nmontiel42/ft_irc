@@ -76,6 +76,11 @@ class Server
 		void accept_new_client();
         void set_server_socket();
 
+        //*----------------------Remove functions----------------------*//
+        void RemoveClient(int fd);
+        void RmChannels(int fd);
+        void RemoveFds(int fd);
+
         //*----------------------Split and Parse functions----------------------*//
         std::vector<std::string> split_cmd(std::string &);
         std::vector<std::string> split_recievedBuffer(std::string);

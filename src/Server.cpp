@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2024/10/17 16:12:21 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/10/17 16:51:49 by anttorre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -184,6 +184,89 @@ void Server::accept_new_client(){
     clients.push_back(newClient);
     fds.push_back(new_cli);
     std::cout <<"New client <" << incoming_fd << "> connected from " << newClient.getIpAdd() << std::endl;    
+}
+
+void recieveNewData(int fd)
+{
+	std::vector<std::string> cmd;
+	char buff[1024];
+	memset(buff, 0, sizeof(buff));
+	Client *cli = GetClient(fd);
+	ssize_t bytes = recv(fd, buff, sizeof(buff) - 1 , 0);
+	if(bytes <= 0)
+	{
+		std::cout << "Client[" << fd << "] " << "<" << cli->getNickName << "> disconnected." << std::endl;
+		RmChannels(fd);
+		RemoveClient(fd);
+		RemoveFds(fd);
+		close(fd);
+	}
+/*     descomentar para realizar la siguiente parte
+	else
+	{ 
+		cli->setBuffer(buff);
+		if(cli->getBuffer().find_first_of("\r\n") == std::string::npos)
+			return;
+		cmd = split_recievedBuffer(cli->getBuffer());
+		for(size_t i = 0; i < cmd.size(); i++)
+			this->parse_exec_cmd(cmd[i], fd);
+		if(GetClient(fd))
+			GetClient(fd)->clearBuffer();
+	} */
+}
+
+/* ------------------REMOVE FUNCTIONS------------------*/
+void Server::RemoveClient(int fd)
+{
+    for (std::vector<Client>::iterator it = this->clients.begin(); it != this->clients.end(); it++)
+    {
+        if (it->getFd() == fd)
+		{
+            this->clients.erase(it); 
+            return;
+        }
+    }
+}
+
+void Server::RmChannels(int fd)
+{
+    for (std::vector<Channel>::iterator it = this->channels.begin(); it != this->channels.end();)
+    {
+        bool flag = false;
+		if (it->getClient(fd))
+		{
+            it->remove_client(fd);
+            flag = true;
+        }
+		else if (it->getAdmin(fd))
+		{
+            it->remove_admin(fd);
+            flag = true;
+        }
+		if (it->getClientsNumber() == 0)
+		{
+            it = this->channels.erase(it);
+            continue;
+        }
+		if (flag)
+        {
+			std::string rpl = ":" + GetClient(fd)->GetNickName() + "!~" + GetClient(fd)->GetUserName() + "@localhost QUIT Quit\r\n";
+			it->sendTo_all(rpl);
+		}
+        ++it;
+    }
+}
+
+void Server::RemoveFds(int fd)
+{
+    for (std::vector<pollfd>::iterator it = this->fds.begin(); it != this->fds.end(); it++)
+    {
+        if (it->fd == fd)
+		{
+            this->fds.erase(it); 
+            return;
+        }
+    }
 }
 
 /* ------------------SPLIT FUNCTIONS------------------*/
