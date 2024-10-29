@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2024/10/29 13:58:24 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/10/29 14:00:36 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,7 @@ void Server::addFds(pollfd newFd)
 }
 
 
-/*  FUNCTIONS   */
+/*------------------FUNCTIONS---------------------*/
 
 void Server::init(int port, std::string pass)
 {
