@@ -3,18 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: antferna <antferna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/16 12:54:30 by antferna          #+#    #+#             */
-/*   Updated: 2024/10/16 15:44:01 by antferna         ###   ########.fr       */
+/*   Updated: 2024/10/29 14:05:26 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #pragma once
 
 #include "Server.hpp"
-//#include "Channel.hpp"
+#include "Channel.hpp"
 #include <cstring>
 
 class Client

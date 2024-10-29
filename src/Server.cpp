@@ -6,10 +6,9 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2024/10/29 14:00:36 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/10/29 14:04:52 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include "../include/Server.hpp"
 
@@ -186,22 +185,21 @@ void Server::accept_new_client(){
     std::cout <<"New client <" << incoming_fd << "> connected from " << newClient.getIpAdd() << std::endl;    
 }
 
-void recieveNewData(int fd)
+void Server::recieveNewData(int fd)
 {
 	std::vector<std::string> cmd;
 	char buff[1024];
 	memset(buff, 0, sizeof(buff));
-	Client *cli = GetClient(fd);
+	Client *cli = getClient(fd);
 	ssize_t bytes = recv(fd, buff, sizeof(buff) - 1 , 0);
 	if(bytes <= 0)
 	{
-		std::cout << "Client[" << fd << "] " << "<" << cli->getNickName << "> disconnected." << std::endl;
+		std::cout << "Client[" << fd << "] " << "<" << cli->getNickName() << "> disconnected." << std::endl;
 		RmChannels(fd);
 		RemoveClient(fd);
 		RemoveFds(fd);
 		close(fd);
 	}
-/*     descomentar para realizar la siguiente parte
 	else
 	{ 
 		cli->setBuffer(buff);
@@ -209,10 +207,10 @@ void recieveNewData(int fd)
 			return;
 		cmd = split_recievedBuffer(cli->getBuffer());
 		for(size_t i = 0; i < cmd.size(); i++)
-			this->parse_exec_cmd(cmd[i], fd);
-		if(GetClient(fd))
-			GetClient(fd)->clearBuffer();
-	} */
+			this->parse_exec_cmd(cmd[i], fd); //falta este
+		if(getClient(fd))
+			getClient(fd)->clearBuffer();
+	}
 }
 
 /* ------------------REMOVE FUNCTIONS------------------*/
@@ -235,12 +233,12 @@ void Server::RmChannels(int fd)
         bool flag = false;
 		if (it->getClient(fd))
 		{
-            it->remove_client(fd);
+            it->removeClient(fd);
             flag = true;
         }
 		else if (it->getAdmin(fd))
 		{
-            it->remove_admin(fd);
+            it->removeAdmin(fd);
             flag = true;
         }
 		if (it->getClientsNumber() == 0)
@@ -250,8 +248,8 @@ void Server::RmChannels(int fd)
         }
 		if (flag)
         {
-			std::string rpl = ":" + GetClient(fd)->GetNickName() + "!~" + GetClient(fd)->GetUserName() + "@localhost QUIT Quit\r\n";
-			it->sendTo_all(rpl);
+			std::string rpl = ":" + getClient(fd)->getNickName() + "!~" + getClient(fd)->getUserName() + "@localhost QUIT Quit\r\n";
+			it->sendToAll(rpl);
 		}
         ++it;
     }

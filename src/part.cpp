@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/29 13:18:41 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/10/29 13:57:06 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/10/29 14:05:09 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ std::string SplitCmdPR(std::string &cmd, std::vector<std::string> &tmp)
     return reason;
 }
 
-int Server::SplitCmdpart(std::string cmd, std::vector<std::string> &tmp, std::string &reason, int fd)
+int Server::SplitCmdPart(std::string cmd, std::vector<std::string> &tmp, std::string &reason, int fd)
 {
     reason = SplitCmdPR(cmd, tmp);
     if (tmp.size() < 2)
