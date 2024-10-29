@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2024/10/29 14:04:14 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/10/29 17:07:25 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,9 +105,9 @@ class Server
         void set_nickname(std::string cmd, int fd); 
         
         //*----------------------JOIN----------------------*// (done)
-        int SplitJoin(std::vector<std::pair<std::string, std::string>> &token, std::string cmd, int fd);
+        int SplitJoin(std::vector<std::pair<std::string, std::string> > &token, std::string cmd, int fd);
         int SearchForClients(std::string nickname);
-        void ExistCh(std::vector<std::pair<std::string, std::string>> &token, int i, int j, int fd);
+        void ExistCh(std::vector<std::pair<std::string, std::string> > &token, int i, int j, int fd);
         void NotExistCh(std::vector<std::pair<std::string, std::string> >&token, int i, int fd);
         void join(std::string cmd, int fd);
 

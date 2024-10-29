@@ -1,7 +1,7 @@
 NAME = ircserv
 CPP = g++
 FLAGS = -Wall -Wextra -Werror -std=c++98
-SRC = main.cpp \
+SRC = src/main.cpp \
 		Server.cpp
 
 

@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/16 14:39:19 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/10/29 13:57:06 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/10/29 17:07:19 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ class Channel
         std::string topic_name;
         std::vector<Client> clients;
         std::vector<Client> admins;
-        std::vector<std::pair<char, bool>> modes;
+        std::vector<std::pair<char, bool> > modes;
     public:
         Channel();
         Channel(const Channel &);
