@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/16 15:38:55 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/10/17 14:40:26 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/10/29 13:56:05 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -255,4 +255,101 @@ void Channel::setCreationTime()
 	std::ostringstream oss;
 	oss << _time; //seconds in string
 	this->created_at = std::string(oss.str());
+}
+
+//*------------------FUNCTIONS------------------*//
+void Channel::removeClient(int fd)
+{
+    for (std::vector<Client>::iterator it = clients.begin(); it != clients.end(); ++it)
+    {
+        if (it->getFd() == fd)
+        {
+            clients.erase(it);
+            break ;
+        }
+    }
+}
+
+void Channel::removeAdmin(int fd)
+{
+    for (std::vector<Client>::iterator it = admins.begin(); it != admins.end(); ++it)
+    {
+        if (it->getFd() == fd)
+        {
+            admins.erase(it);
+            break ;
+        }
+    }
+}
+
+void Channel::addClient(Client newClient)
+{
+    clients.push_back(newClient);
+}
+
+void Channel::addAdmin(Client newAdmin)
+{
+    admins.push_back(newAdmin);
+}
+
+bool Channel::changeClientToAdmin(std::string &nick)
+{
+    size_t i = 0;
+    for (; i < clients.size(); i++)
+    {
+        if (clients[i].getNickName() == nick)
+            break ;
+    }
+    if (i < clients.size())
+    {
+        admins.push_back(clients[i]);
+        clients.erase(i + clients.begin());
+        return true;
+    }
+    return false;
+}
+
+bool Channel::changeAdminToClient(std::string &nick)
+{
+    size_t i = 0;
+    for (; i < admins.size(); i++)
+    {
+        if (admins[i].getNickName() == nick)
+            break ;
+    }
+    if (i < admins.size())
+    {
+        clients.push_back(admins[i]);
+        admins.erase(i + admins.begin());
+        return true;
+    }
+    return false;
+}
+
+
+//*------------------SEND------------------*//
+void Channel::sendToAll(std::string msg)
+{
+    for(size_t i = 0; i < admins.size(); i++)
+        if (send(admins[i].getFd(), msg.c_str(), msg.size(), 0) == -1)
+            std::cerr << "Send() failed" << std::endl;
+    for(size_t i = 0; i < clients.size(); i++)
+        if (send(clients[i].getFd(), msg.c_str(), msg.size(), 0) == -1)
+            std::cerr << "Send() failed" << std::endl;
+}
+
+void Channel::sendToAll(std::string msg, int fd)
+{
+    for (size_t i = 0; i < admins.size(); i++)
+    {
+        if (admins[i].getFd() != fd)
+            if (send(admins[i].getFd(), msg.c_str(), msg.size(), 0) == -1)
+                std::cerr << "Send() failed" << std::endl;
+    }
+    for (size_t i = 0; i < clients.size(); i++)
+    {
+        if (clients[i].getFd() != fd)
+            if (send(clients[i].getFd(), msg.c_str(), msg.size(), 0) == -1)
+                std::cerr << "Send() failed" << std::endl;
+    }
 }

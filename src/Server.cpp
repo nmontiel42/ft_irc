@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2024/10/17 16:12:21 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/10/29 13:56:05 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -243,6 +243,7 @@ void Server::senderror(std::string clientname, std::string channelname, int fd, 
         std::cerr << "send() failed" << std::endl;
 }
 
+
 /*------------------SIGNALS AND CLOSE------------------*/
 
 void Server::Signalhandler(int signum)
@@ -265,6 +266,7 @@ void Server::close_fds()
         close(server_fdsocket);
     }
 }
+
 
 /*------------------AUTHENTICATION SYSTEM------------------*/
 
@@ -414,3 +416,4 @@ void Server::set_nickname(std::string nick, int fd)
         _sendResponse(cli->getNickName() + ": Welcome to the IRC server!\r\n", fd);
     }
 }
+

@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2024/10/17 15:40:20 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/10/29 13:56:05 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ class Server
         static void Signalhandler(int signum);
         void close_fds();
 
-        //*----------------------Authentification System----------------------*//
+        //*----------------------Authentification System----------------------*// (done)
         bool notRegistered(int fd);
         bool nickNameInUse(std::string &);
         bool isValidNickName(std::string &);
@@ -98,10 +98,22 @@ class Server
         void set_username(std::string &username, int fd);
         void set_nickname(std::string cmd, int fd); 
         
-        //*----------------------JOIN----------------------*//
+        //*----------------------JOIN----------------------*// (done)
         int SplitJoin(std::vector<std::pair<std::string, std::string>> &token, std::string cmd, int fd);
+        int SearchForClients(std::string nickname);
+        void ExistCh(std::vector<std::pair<std::string, std::string>> &token, int i, int j, int fd);
+        void NotExistCh(std::vector<std::pair<std::string, std::string> >&token, int i, int fd);
+        void join(std::string cmd, int fd);
+
         
         //*----------------------INVITE----------------------*//
         void invite(std::string &cmd, int &fd); 
+
+        //*----------------------QUIT----------------------*// (done)
+        void quit(std::string cmd, int fd);
+        
+        //*----------------------PART----------------------*// (done)
+        void part(std::string cmd, int fd);
+        int SplitCmdPart(std::string cmd, std::vector<std::string> &tmp, std::string &reason, int fd);
 };
 
