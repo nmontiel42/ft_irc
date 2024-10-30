@@ -6,13 +6,13 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 15:05:06 by antferna          #+#    #+#             */
-/*   Updated: 2024/10/29 13:55:54 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/10/30 15:34:56 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/Server.hpp"
 
-int Server::SplitJoin(std::vector<std::pair<std::string, std::string>> &token, std::string cmd, int fd)
+int Server::SplitJoin(std::vector<std::pair<std::string, std::string> > &token, std::string cmd, int fd)
 {
     std::vector<std::string> tmp;
     std::string chStr, passStr, buffer;
@@ -102,7 +102,7 @@ bool IsInvited(Client *client, std::string channel, int flag)
     return false;
 }
 
-void Server::ExistCh(std::vector<std::pair<std::string, std::string>> &token, int i, int j, int fd)
+void Server::ExistCh(std::vector<std::pair<std::string, std::string> > &token, int i, int j, int fd)
 {
     if(this->channels[j].getClientInChannel(getClient(fd)->getNickName()))
         return;
@@ -168,7 +168,7 @@ void Server::NotExistCh(std::vector<std::pair<std::string, std::string> >&token,
 
 void Server::join(std::string cmd, int fd)
 {
-    std::vector<std::pair<std::string, std::string>> token;
+    std::vector<std::pair<std::string, std::string> > token;
     if(!SplitJoin(token, cmd, fd))
     {
         senderror(getClient(fd)->getNickName(), getClient(fd)->getFd(), " :Not enough parameters\n");

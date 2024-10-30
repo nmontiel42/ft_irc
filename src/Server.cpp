@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2024/10/30 13:12:20 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/10/30 15:41:41 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,7 +125,7 @@ void Server::init(int port, std::string pass)
 
 	set_server_socket();
 	std::cout << "Server Running. Waiting for connections" << std::endl;
-	while (!Server::Signal)
+	while (Server::Signal == false)
 	{
 		if (poll(&fds[0], fds.size(), -1) == -1)
 			throw(std::runtime_error("Poll failed."));
@@ -207,7 +207,7 @@ void Server::recieveNewData(int fd)
 			return;
 		cmd = split_recievedBuffer(cli->getBuffer());
 		for(size_t i = 0; i < cmd.size(); i++)
-			this->parse_exec_cmd(cmd[i], fd);
+			//this->parse_exec_cmd(cmd[i], fd);
 		if(getClient(fd))
 			getClient(fd)->clearBuffer();
 	}
@@ -338,6 +338,8 @@ void Server::senderror(std::string clientname, std::string channelname, int fd, 
 
 
 /*------------------SIGNALS AND CLOSE------------------*/
+
+bool Server::Signal = false;
 
 void Server::Signalhandler(int signum)
 {

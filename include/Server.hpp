@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/29 17:08:42 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/10/30 13:12:07 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/10/30 15:42:25 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,6 @@
 
 #include "Client.hpp"
 #include "Channel.hpp"
-
-class Client;
-class Channel;
 
 class Server
 {
@@ -71,13 +68,13 @@ class Server
         void addChannel(Channel newChannel);
         void addFds(pollfd newFd);
 
-        //*----------------------Server functions----------------------*//
+        //*----------------------Server functions----------------------*// (done)
         void init(int port, std::string pass);
 		void accept_new_client();
         void set_server_socket();
         void recieveNewData(int fd);
 
-        //*----------------------Remove functions----------------------*//
+        //*----------------------Remove functions----------------------*// (done)
         void RemoveClient(int fd);
         void RemoveChannel(std::string name);
         void RmChannels(int fd);
@@ -145,6 +142,5 @@ class Server
         std::vector<std::string> splitParams(std::string params);
         void getCmdArgs(std::string cmd, std::string &name, std::string &modeset, std::string &params);
         bool isValidLimit(std::string &limit);
-
 };
 

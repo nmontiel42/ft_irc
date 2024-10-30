@@ -2,7 +2,16 @@ NAME = ircserv
 CPP = g++
 FLAGS = -Wall -Wextra -Werror -std=c++98
 SRC = src/main.cpp \
-		Server.cpp
+		src/Server.cpp \
+		src/Client.cpp \
+		src/Channel.cpp \
+		src/invite.cpp \
+		src/join.cpp \
+		src/kick.cpp \
+		src/part.cpp \
+		src/privmsg.cpp \
+		src/quit.cpp \
+
 
 
 OBJ = $(SRC:.cpp=.o)
