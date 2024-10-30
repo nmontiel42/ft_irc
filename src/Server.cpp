@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2024/10/30 10:59:55 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/10/30 13:12:20 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -207,7 +207,7 @@ void Server::recieveNewData(int fd)
 			return;
 		cmd = split_recievedBuffer(cli->getBuffer());
 		for(size_t i = 0; i < cmd.size(); i++)
-			//this->parse_exec_cmd(cmd[i], fd); //falta este
+			this->parse_exec_cmd(cmd[i], fd);
 		if(getClient(fd))
 			getClient(fd)->clearBuffer();
 	}

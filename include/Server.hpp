@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/29 17:08:42 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/10/30 13:11:10 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/10/30 13:12:07 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ class Server
         //*----------------------Split and Parse functions----------------------*//
         std::vector<std::string> split_cmd(std::string &);
         std::vector<std::string> split_recievedBuffer(std::string);
-        //void parse_exec_cmd(std::string &cmd, int fd);
+        void parse_exec_cmd(std::string &cmd, int fd);
 
         //*----------------------Send functions----------------------*// (done)
         void _sendResponse(std::string response, int fd);
