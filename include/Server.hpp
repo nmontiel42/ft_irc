@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/29 17:08:42 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/10/29 17:08:46 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/10/30 13:11:10 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,7 @@ class Server
 
         //*----------------------Remove functions----------------------*//
         void RemoveClient(int fd);
+        void RemoveChannel(std::string name);
         void RmChannels(int fd);
         void RemoveFds(int fd);
 
@@ -111,9 +112,12 @@ class Server
         void NotExistCh(std::vector<std::pair<std::string, std::string> >&token, int i, int fd);
         void join(std::string cmd, int fd);
 
-        
-        //*----------------------INVITE----------------------*//
+        //*----------------------TOPIC----------------------*//
         void invite(std::string &cmd, int &fd); 
+        std::string tTopic();
+        void topic(std::string &cmd, int &fd);
+        std::string getTopic(std::string &input);
+        int getPos(std::string &cmd);
 
         //*----------------------QUIT----------------------*// (done)
         void quit(std::string cmd, int fd);
@@ -121,5 +125,26 @@ class Server
         //*----------------------PART----------------------*// (done)
         void part(std::string cmd, int fd);
         int SplitCmdPart(std::string cmd, std::vector<std::string> &tmp, std::string &reason, int fd);
+
+        //*----------------------KICK----------------------*// (done)
+        void kick(std::string cmd, int fd);
+        std::string SplitCmdKick(std::string cmd, std::vector<std::string> &tmp, std::string &user, int fd);
+
+        //*----------------------PRIVMSG----------------------*// (done)
+        void privmsg(std::string cmd, int fd);
+        void checkForChannelsClients(std::vector<std::string> &tmp, int fd);
+
+        //*----------------------MODE----------------------*//
+        void mode(std::string &cmd, int fd);
+        std::string inviteOnly(Channel *channel, char opera, std::string chain);
+        std::string topicRestriction(Channel *channel, char opera, std::string chain);
+        std::string passwordMode(std::vector<std::string> splited, Channel *channel, size_t &pos, char opera, int fd, std::string chain, std::string &arguments);
+        std::string channelLimit(std::vector<std::string> splited, Channel *channel, size_t &pos, char opera, int fd, std::string chain, std::string &arguments);
+        std::string operatorPrivilege(std::vector<std::string> splited, Channel *channel, size_t &pos, char opera, int fd, std::string chain, std::string &arguments);
+        std::string modeToAppend(std::string chain, char opera, char mode);
+        std::vector<std::string> splitParams(std::string params);
+        void getCmdArgs(std::string cmd, std::string &name, std::string &modeset, std::string &params);
+        bool isValidLimit(std::string &limit);
+
 };
 

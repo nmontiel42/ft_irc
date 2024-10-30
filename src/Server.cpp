@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2024/10/29 14:04:52 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/10/30 10:59:55 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -207,7 +207,7 @@ void Server::recieveNewData(int fd)
 			return;
 		cmd = split_recievedBuffer(cli->getBuffer());
 		for(size_t i = 0; i < cmd.size(); i++)
-			this->parse_exec_cmd(cmd[i], fd); //falta este
+			//this->parse_exec_cmd(cmd[i], fd); //falta este
 		if(getClient(fd))
 			getClient(fd)->clearBuffer();
 	}
@@ -262,6 +262,18 @@ void Server::RemoveFds(int fd)
         if (it->fd == fd)
 		{
             this->fds.erase(it); 
+            return;
+        }
+    }
+}
+
+void Server::RemoveChannel(std::string name)
+{
+    for (size_t i = 0; i < this->channels.size(); i++)
+    {
+        if (this->channels[i].getName() == name)
+        {
+            this->channels.erase(this->channels.begin() + i);
             return;
         }
     }
