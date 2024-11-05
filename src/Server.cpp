@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2024/11/05 11:26:57 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/11/05 13:07:34 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -552,3 +552,40 @@ void Server::set_nickname(std::string nick, int fd)
     }
 }
 
+/*------------------COMMANDS------------------*/
+
+void Server::findSubString(std::string cmd, std::string tofind, std::string &str)
+{
+    size_t i = 0;
+    for (; i < cmd.size(); i++)
+    {
+        if (cmd[i] != ' ')
+        {
+            std::string tmp;
+            for (; i < cmd.size() && cmd[i] != ' '; i++)
+                tmp += cmd[i];
+            if (tmp == tofind)
+                break ;
+            else
+                tmp.clear();
+        }
+    }
+    if (i < cmd.size())
+        str = cmd.substr(i);
+    i = 0;
+    for (; i < str.size() && str[i] == ' '; i++);
+    str = str.substr(i);
+}
+
+std::string Server::splitCommand(std::string &cmd, std::vector<std::string> &tmp)
+{
+    std::stringstream ss(cmd);
+    std::string str, reason;
+    int count = 2;
+    while (ss >> str && count--)
+        tmp.push_back(str);
+    if (tmp.size() != 2)
+        return std::string("");
+    findSubString(cmd, tmp[1], reason);
+    return reason;
+}

@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/29 17:08:42 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/11/05 11:20:16 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/11/05 13:10:56 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,5 +142,9 @@ class Server
         std::vector<std::string> splitParams(std::string params);
         void getCmdArgs(std::string cmd, std::string &name, std::string &modeset, std::string &params);
         bool isValidLimit(std::string &limit);
+
+        //*----------------------COMMANDS----------------------*// (done)
+        void findSubString(std::string cmd, std::string tofind, std::string &str);
+        std::string splitCommand(std::string &cmd, std::vector<std::string> &tmp);
 };
 

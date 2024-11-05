@@ -6,54 +6,16 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 11:03:27 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/11/05 11:19:58 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/11/05 13:09:13 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/Server.hpp"
 
-//Find a substring
-void FindK(std::string cmd, std::string tofind, std::string &str)
-{
-    size_t i = 0;
-    for (; i < cmd.size(); i++)
-    {
-        if (cmd[i] != ' ')
-        {
-            std::string tmp;
-            for (; i < cmd.size() && cmd[i] != ' '; i++)
-                tmp += cmd[i];
-            if (tmp == tofind)
-                break ;
-            else
-                tmp.clear();
-        }
-    }
-    if (i < cmd.size())
-        str = cmd.substr(i);
-    i = 0;
-    for (; i < str.size() && str[i] == ' '; i++);
-    str = str.substr(i);
-} 
-
-//Obtain reason
-std::string SplitCmdK(std::string &cmd, std::vector<std::string> &tmp)
-{
-    std::stringstream ss(cmd);
-    std::string str, reason;
-    int count = 3;
-    while (ss >> str && count--)
-        tmp.push_back(str);
-    if (tmp.size() != 3)
-        return std::string("");
-    FindK(cmd, tmp[2], reason);
-    return reason;
-}
-
 // Split command line
 std::string Server::SplitCmdKick(std::string cmd, std::vector<std::string> &tmp, std::string &user, int fd)
 {
-    std::string reason = SplitCmdK(cmd, tmp);
+    std::string reason = splitCommand(cmd, tmp);
     if (tmp.size() < 3)
         return std::string ("");
     tmp.erase(tmp.begin()); 
