@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2024/10/30 15:41:41 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/11/05 11:26:57 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -212,6 +212,46 @@ void Server::recieveNewData(int fd)
 			getClient(fd)->clearBuffer();
 	}
 }
+
+void Server::parse_exec_cmd(std::string &cmd, int fd)
+{
+    if (cmd.empty())
+        return ;
+    std::vector<std::string> splited_cmd = split_cmd(cmd);
+    size_t found = cmd.find_first_not_of("\r\n");
+    if (found != std::string::npos)
+        cmd = cmd.substr(found);
+    if (splited_cmd.size() && (splited_cmd[0] == "PASS" || splited_cmd[0] == "pass"))
+        client_authen(fd, cmd);
+    else if (splited_cmd.size() && (splited_cmd[0] == "NICK" || splited_cmd[0] == "nick"))
+        set_nickname(cmd, fd);
+    else if (splited_cmd.size() && (splited_cmd[0] == "USER" || splited_cmd[0] == "user"))
+        set_username(cmd, fd);
+    else if (splited_cmd.size() && (splited_cmd[0] == "QUIT" || splited_cmd[0] == "quit"))
+        quit(cmd, fd);
+    else if (notRegistered(fd))
+    {
+        if (splited_cmd.size() && (splited_cmd[0] == "KICK" || splited_cmd[0] == "kick"))
+            kick(cmd, fd);
+        else if (splited_cmd.size() && (splited_cmd[0] == "JOIN" || splited_cmd[0] == "join"))
+            join(cmd, fd);
+        else if (splited_cmd.size() && (splited_cmd[0] == "PART" || splited_cmd[0] == "part"))
+            part(cmd, fd);
+        else if (splited_cmd.size() && (splited_cmd[0] == "PRIVMSG" || splited_cmd[0] == "privmsg"))
+            privmsg(cmd, fd);
+        else if (splited_cmd.size() && (splited_cmd[0] == "INVITE" || splited_cmd[0] == "invite"))
+            invite(cmd, fd);
+        else if (splited_cmd.size() && (splited_cmd[0] == "TOPIC" || splited_cmd[0] == "topic"))
+            topic(cmd, fd);
+        else if (splited_cmd.size() && (splited_cmd[0] == "MODE" || splited_cmd[0] == "mode"))
+            mode(cmd, fd);
+        else
+            _sendResponse(getClient(fd)->getNickName() + splited_cmd[0] + " :Invalid command\n", fd);
+    }
+    else if (!notRegistered(fd))
+        _sendResponse(std::string("*") + "Error: Not registered\n", fd);
+}
+
 
 /* ------------------REMOVE FUNCTIONS------------------*/
 void Server::RemoveClient(int fd)
