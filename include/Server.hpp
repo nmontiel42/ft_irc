@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/29 17:08:42 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/11/05 13:10:56 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/11/05 13:12:50 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@
 
 #include "Client.hpp"
 #include "Channel.hpp"
+
+class Channel;
 
 class Server
 {

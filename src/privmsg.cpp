@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 11:37:37 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/11/05 13:10:38 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/11/05 13:36:03 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,15 +112,17 @@ void Server::checkForChannelsClients(std::vector<std::string> &tmp, int fd)
                 i--;
             }
             else
-            {
-                if (!getClientNick(tmp[i]))
-                {
-                    senderror(tmp[i], getClient(fd)->getFd(), ": Channel/Nick does not exist.\r\n");
-                    tmp.erase(tmp.begin() + i);
-                    i--;
-                }
-            }
+                tmp[i] = '#' + tmp[i];
        }
+        else
+        {
+            if (!getClientNick(tmp[i]))
+            {
+                senderror(tmp[i], getClient(fd)->getFd(), ": Channel/Nick does not exist.\r\n");
+                tmp.erase(tmp.begin() + i);
+                i--;
+            }
+        }
     }
 }
 

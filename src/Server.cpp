@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2024/11/05 13:07:34 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/11/05 13:40:49 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,12 +129,15 @@ void Server::init(int port, std::string pass)
 	{
 		if (poll(&fds[0], fds.size(), -1) == -1)
 			throw(std::runtime_error("Poll failed."));
-		for(std::vector<struct pollfd>::iterator it = fds.begin(); it != fds.end(); it++)
+		for (size_t i = 0; i < fds.size(); i++)
 		{
-			if (it->revents & POLLIN)
-				accept_new_client();
-			else
-				recieveNewData(it->fd);
+			if (fds[i].revents & POLLIN)
+			{
+				if (fds[i].fd == server_fdsocket)
+					this->accept_new_client();
+				else
+					this->recieveNewData(fds[i].fd);
+			}
 		}
 	}
 	close_fds();
@@ -207,7 +210,7 @@ void Server::recieveNewData(int fd)
 			return;
 		cmd = split_recievedBuffer(cli->getBuffer());
 		for(size_t i = 0; i < cmd.size(); i++)
-			//this->parse_exec_cmd(cmd[i], fd);
+			this->parse_exec_cmd(cmd[i], fd);
 		if(getClient(fd))
 			getClient(fd)->clearBuffer();
 	}
@@ -221,7 +224,9 @@ void Server::parse_exec_cmd(std::string &cmd, int fd)
     size_t found = cmd.find_first_not_of("\r\n");
     if (found != std::string::npos)
         cmd = cmd.substr(found);
-    if (splited_cmd.size() && (splited_cmd[0] == "PASS" || splited_cmd[0] == "pass"))
+    if (splited_cmd.size() && (splited_cmd[0] == "BONG" || splited_cmd[0] == "bong"))
+        return;    
+    else if (splited_cmd.size() && (splited_cmd[0] == "PASS" || splited_cmd[0] == "pass"))
         client_authen(fd, cmd);
     else if (splited_cmd.size() && (splited_cmd[0] == "NICK" || splited_cmd[0] == "nick"))
         set_nickname(cmd, fd);
@@ -241,10 +246,10 @@ void Server::parse_exec_cmd(std::string &cmd, int fd)
             privmsg(cmd, fd);
         else if (splited_cmd.size() && (splited_cmd[0] == "INVITE" || splited_cmd[0] == "invite"))
             invite(cmd, fd);
-        else if (splited_cmd.size() && (splited_cmd[0] == "TOPIC" || splited_cmd[0] == "topic"))
-            topic(cmd, fd);
-        else if (splited_cmd.size() && (splited_cmd[0] == "MODE" || splited_cmd[0] == "mode"))
-            mode(cmd, fd);
+        /* else if (splited_cmd.size() && (splited_cmd[0] == "TOPIC" || splited_cmd[0] == "topic"))
+            topic(cmd, fd); */
+       /*  else if (splited_cmd.size() && (splited_cmd[0] == "MODE" || splited_cmd[0] == "mode"))
+            mode(cmd, fd); */
         else
             _sendResponse(getClient(fd)->getNickName() + splited_cmd[0] + " :Invalid command\n", fd);
     }
@@ -485,72 +490,85 @@ void Server::set_username(std::string &cmd, int fd)
     }
 }
 
-void Server::set_nickname(std::string nick, int fd)
+void Server::set_nickname(std::string cmd, int fd)
 {
     std::string inUse;
-    nick = nick.substr(4);
-    size_t pos = nick.find("\t\v ");
-    if (pos < nick.size())
-    {
-        nick = nick.substr(pos);
-        if (nick[0] == ':')
-            nick.erase(nick.begin());
-    }
-    Client *cli = getClient(fd);
-    if (pos == std::string::npos || nick.empty())
+    cmd = cmd.substr(4);  // Elimina "NICK "
+    
+    size_t pos = cmd.find_first_not_of("\t\v ");  // Encuentra el primer carácter no espacio
+    if (pos == std::string::npos || pos >= cmd.size())  // Comprobación para no tener parámetros
     {
         _sendResponse(std::string("*") + ": Not enough parameters.\r\n", fd);
-        return ;
+        return;
     }
-    if (nickNameInUse(nick) && cli->getNickName() != nick)
+
+    cmd = cmd.substr(pos);  // Extrae el apodo, limpiando espacios al principio
+    if (cmd[0] == ':')  // Si el apodo empieza con ':', elimínalo
+        cmd.erase(cmd.begin());
+
+    Client *cli = getClient(fd);  // Obtiene el cliente asociado con el socket fd
+    if (cmd.empty())
+    {
+        _sendResponse(std::string("*") + ": Not enough parameters.\r\n", fd);
+        return;
+    }
+
+    if (nickNameInUse(cmd) && cli->getNickName() != cmd)  // Verifica si el apodo ya está en uso
     {
         inUse = "*";
         if (cli->getNickName().empty())
             cli->setNickname(inUse);
-        _sendResponse(std::string(nick) + ": Nickname is already in use\r\n", fd);
-        return ;
+        _sendResponse(std::string(cmd) + ": Nickname is already in use\r\n", fd); 
+        return;
     }
-    if (!isValidNickName(nick))
+
+    if (!isValidNickName(cmd))  // Verifica si el apodo es válido
     {
-        _sendResponse(std::string(nick) + ": Erroneus nickname.\r\n", fd);
-        return ;
+        _sendResponse(std::string(cmd) + ": Erroneus nickname.\r\n", fd);
+        return;
     }
-    else
+
+    // Si el cliente está registrado y se puede cambiar el apodo
+    if (cli && cli->getRegistered())
     {
-        if (cli && cli->getRegistered())
+        std::string oldNick = cli->getNickName();
+        cli->setNickname(cmd);  // Establece el nuevo apodo
+
+        for (size_t i = 0; i < channels.size(); i++)  // Cambia el apodo en los canales
         {
-            std::string oldNick = cli->getNickName();
-            cli->setNickname(nick);
-            for(size_t i = 0; i < channels.size(); i++)
-            {
-                Client *cl = channels[i].getClientInChannel(oldNick);
-                if (cl)
-                    cl->setNickname(nick);
-            }
-            if (!oldNick.empty() && oldNick != nick)
-            {
-                if (oldNick == "*" && !cli->getUserName().empty())
-                {
-                    //First nickname
-                    cli->setLogedIn(true);
-                    _sendResponse(cli->getNickName() + ": Welcome to the IRC server!\r\n", fd);
-                    _sendResponse(cli->getNickName() + ": Nickname established: " + nick + "\r\n", fd);
-                }
-                else
-                    //change username
-                    _sendResponse(oldNick + ": Nickname changed: " + nick + "\r\n", fd);
-                return ;
-            }
+            Client *cl = channels[i].getClientInChannel(oldNick);
+            if (cl)
+                cl->setNickname(cmd);
         }
-        else if (cli && !cli->getRegistered())
-            _sendResponse(nick + ": You are not registered!\r\n", fd);
+
+        if (!oldNick.empty() && oldNick != cmd)
+        {
+            if (oldNick == "*" && !cli->getUserName().empty())  // Primer apodo
+            {
+                cli->setLogedIn(true);
+                _sendResponse(cli->getNickName() + ": Welcome to the IRC server!\r\n", fd);
+                _sendResponse(cli->getNickName() + ": Nickname established: " + cmd + "\r\n", fd);
+            }
+            else  // Cambio de apodo
+            {
+                _sendResponse(oldNick + ": Nickname changed: " + cmd + "\r\n", fd);
+            }
+            return;
+        }
     }
+    else if (cli && !cli->getRegistered())  // Si no está registrado
+    {
+        _sendResponse(cmd + ": You are not registered!\r\n", fd);
+    }
+
+    // Si el cliente está registrado y tiene un nombre de usuario y un apodo válido
     if (cli && cli->getRegistered() && !cli->getUserName().empty() && !cli->getNickName().empty() && cli->getNickName() != "*" && !cli->getLogedIn())
     {
         cli->setLogedIn(true);
         _sendResponse(cli->getNickName() + ": Welcome to the IRC server!\r\n", fd);
     }
 }
+
 
 /*------------------COMMANDS------------------*/
 
