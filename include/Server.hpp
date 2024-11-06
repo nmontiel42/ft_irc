@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anttorre <anttorre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/29 17:08:42 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/11/05 13:12:50 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/11/06 13:56:11 by anttorre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,9 +110,9 @@ class Server
         void ExistCh(std::vector<std::pair<std::string, std::string> > &token, int i, int j, int fd);
         void NotExistCh(std::vector<std::pair<std::string, std::string> >&token, int i, int fd);
         void join(std::string cmd, int fd);
+		void invite(std::string &cmd, int &fd);
 
         //*----------------------TOPIC----------------------*//
-        void invite(std::string &cmd, int &fd); 
         std::string tTopic();
         void topic(std::string &cmd, int &fd);
         std::string getTopic(std::string &input);
