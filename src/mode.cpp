@@ -6,7 +6,7 @@
 /*   By: anttorre <anttorre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 15:30:25 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/11/11 16:12:32 by anttorre         ###   ########.fr       */
+/*   Updated: 2024/11/11 16:25:33 by anttorre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -192,12 +192,12 @@ std::string Server::passwordMode(std::vector<std::string> tokens, Channel *chann
 		pass = tokens[pos++];
 	else
 	{
-		_sendResponse(channel->getName() + " * You must specify a parameter for the key mode.\r\n" ,fd);
+		_sendResponse(channel->getName() + " * You must specify a parameter for the key mode. (k)\r\n" ,fd);
 		return param;
 	}
 	if(!validPassword(pass))
 	{
-		_sendResponse(channel->getName() + " Invalid mode parameter.\r\n", fd);
+		_sendResponse(channel->getName() + " Invalid mode parameter. (k)\r\n", fd);
 		return param;
 	}
 	if(opera == '+')
@@ -230,8 +230,8 @@ std::string Server::operatorPrivilege(std::vector<std::string> splited, Channel 
 
 	param.clear();
 	user.clear();
-	if(tokens.size() > pos)
-		user = tokens[pos++];
+	if(splited.size() > pos)
+		user = splited[pos++];
 	else
 	{
 		_sendResponse(ERR_NEEDMODEPARM(channel->GetName(),"(o)"),fd);
