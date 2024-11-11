@@ -6,7 +6,7 @@
 /*   By: anttorre <anttorre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/29 17:08:42 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/11/06 13:56:11 by anttorre         ###   ########.fr       */
+/*   Updated: 2024/11/11 12:52:16 by anttorre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ class Server
         int getPort();
         std::string getPassword();
         Client *getClient(int fd);
-        Client *getClientNick(std::string nickame);
+        Client *getClientNick(std::string nickname);
         Channel *getChannel(std::string name);
 
         //*----------------------Setters----------------------*// (done)
