@@ -6,7 +6,7 @@
 /*   By: anttorre <anttorre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 15:30:25 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/11/11 13:48:14 by anttorre         ###   ########.fr       */
+/*   Updated: 2024/11/11 16:12:32 by anttorre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,59 +127,61 @@ void Server::mode(std::string& cmd, int fd)
 	std::string chain = mode_chain.str();
 	if(chain.empty())
 		return ;
- 	channel->sendTo_all(RPL_CHANGEMODE(cli->getHostname(), channel->GetName(), mode_chain.str(), arguments));
+	channel->sendToAll(cli->getHostName() + " MODE #" + channel->getName() + " " + channel->getModes() + " " + arguments + "\r\n");
+	
 }
 
-std::string Server::invite_only(Channel *channel, char opera, std::string chain)
+std::string Server::inviteOnly(Channel *channel, char opera, std::string chain)
 {
 	std::string param;
 	param.clear();
 	if(opera == '+' && !channel->getModeAtindex(0))
 	{
-		channel->setModeAtindex(0, true);
-		channel->SetInvitOnly(1);
-		param =  mode_toAppend(chain, opera, 'i');
+		channel->setModeAtIndex(0, true);
+		channel->setInvitOnly(1);
+		param =  modeToAppend(chain, opera, 'i');
 	}
 	else if (opera == '-' && channel->getModeAtindex(0))
 	{
-		channel->setModeAtindex(0, false);
-		channel->SetInvitOnly(0);
-		param =  mode_toAppend(chain, opera, 'i');
+		channel->setModeAtIndex(0, false);
+		channel->setInvitOnly(0);
+		param =  modeToAppend(chain, opera, 'i');
 	}
 	return param;
 }
 
-std::string Server::topic_restriction(Channel *channel ,char opera, std::string chain)
+std::string Server::topicRestriction(Channel *channel ,char opera, std::string chain)
 {
 	std::string param;
 	param.clear();
 	if(opera == '+' && !channel->getModeAtindex(1))
 	{
-		channel->setModeAtindex(1, true);
-		channel->set_topicRestriction(true);
-		param =  mode_toAppend(chain, opera, 't');
+		channel->setModeAtIndex(1, true);
+		channel->setTopicRestriction(true);
+		param =  modeToAppend(chain, opera, 't');
 	}
 	else if (opera == '-' && channel->getModeAtindex(1))
 	{
-		channel->setModeAtindex(1, false);
-		channel->set_topicRestriction(false);
-		param =  mode_toAppend(chain, opera, 't');
+		channel->setModeAtIndex(1, false);
+		channel->setTopicRestriction(false);
+		param =  modeToAppend(chain, opera, 't');
 	}	
 	return param;
 }
 
 bool validPassword(std::string password)
 {
-	if(password.empty())
+	if (password.empty())
 		return false;
-	for(size_t i = 0; i < password.size(); i++)
+	for (size_t i = 0; i < password.size(); i++)
 	{
 		if(!std::isalnum(password[i]) && password[i] != '_')
 			return false;
 	}
 	return true;
 }
-std::string Server::password_mode(std::vector<std::string> tokens, Channel *channel, size_t &pos, char opera, int fd, std::string chain, std::string &arguments)
+
+std::string Server::passwordMode(std::vector<std::string> tokens, Channel *channel, size_t &pos, char opera, int fd, std::string chain, std::string &arguments)
 {
 	std::string param;
 	std::string pass;
@@ -190,38 +192,38 @@ std::string Server::password_mode(std::vector<std::string> tokens, Channel *chan
 		pass = tokens[pos++];
 	else
 	{
-		_sendResponse(ERR_NEEDMODEPARM(channel->GetName(),std::string("(k)")),fd);
+		_sendResponse(channel->getName() + " * You must specify a parameter for the key mode.\r\n" ,fd);
 		return param;
 	}
 	if(!validPassword(pass))
 	{
-		_sendResponse(ERR_INVALIDMODEPARM(channel->GetName(),std::string("(k)")),fd);
+		_sendResponse(channel->getName() + " Invalid mode parameter.\r\n", fd);
 		return param;
 	}
 	if(opera == '+')
 	{
-		channel->setModeAtindex(2, true);
-		channel->SetPassword(pass);
+		channel->setModeAtIndex(2, true);
+		channel->setPassword(pass);
 		if(!arguments.empty())
 			arguments += " ";
 		arguments += pass;
-		param = mode_toAppend(chain,opera, 'k');
+		param = modeToAppend(chain,opera, 'k');
 	}
 	else if (opera == '-' && channel->getModeAtindex(2))
 	{
-		if(pass == channel->GetPassword())
+		if(pass == channel->getPassword())
 		{		
-			channel->setModeAtindex(2, false);
-			channel->SetPassword("");
-			param = mode_toAppend(chain,opera, 'k');
+			channel->setModeAtIndex(2, false);
+			channel->setPassword("");
+			param = modeToAppend(chain,opera, 'k');
 		}
 		else
-			_sendResponse(ERR_KEYSET(channel->GetName()),fd);
+			_sendResponse(channel->getName() + " Channel key already set.\r\n",fd);
 	}
 	return param;
 }
 
-std::string Server::operator_privilege(std::vector<std::string> tokens, Channel *channel, size_t& pos, int fd, char opera, std::string chain, std::string& arguments)
+std::string Server::operatorPrivilege(std::vector<std::string> splited, Channel *channel, size_t& pos, char opera, int fd, std::string chain, std::string& arguments)
 {
 	std::string user;
 	std::string param;
@@ -266,12 +268,12 @@ std::string Server::operator_privilege(std::vector<std::string> tokens, Channel 
 	return param;
 }
 
-bool Server::isvalid_limit(std::string& limit)
+bool Server::isValidLimit(std::string& limit)
 {
 	return (!(limit.find_first_not_of("0123456789")!= std::string::npos) && std::atoi(limit.c_str()) > 0);
 }
 
-std::string Server::channel_limit(std::vector<std::string> tokens,  Channel *channel, size_t &pos, char opera, int fd, std::string chain, std::string& arguments)
+std::string Server::channelLimit(std::vector<std::string> tokens,  Channel *channel, size_t &pos, char opera, int fd, std::string chain, std::string& arguments)
 {
 	std::string limit;
 	std::string param;
