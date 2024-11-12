@@ -6,7 +6,7 @@
 /*   By: anttorre <anttorre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 15:30:25 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/11/12 15:46:38 by anttorre         ###   ########.fr       */
+/*   Updated: 2024/11/12 15:59:26 by anttorre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -279,33 +279,31 @@ std::string Server::channelLimit(std::vector<std::string> tokens,  Channel *chan
 
 	param.clear();
 	limit.clear();
-	if(opera == '+')
+	if (opera == '+')
 	{
-		if(tokens.size() > pos )
+		if (tokens.size() > pos )
 		{
 			limit = tokens[pos++];
-			if(!isvalid_limit(limit))
-			{
-				_sendResponse(ERR_INVALIDMODEPARM(channel->GetName(),"(l)"), fd);
-			}
+			if (!isValidLimit(limit))
+				_sendResponse(channel->getName() + " Invalid mode parameter. (l)\r\n", fd);
 			else
 			{
-				channel->setModeAtindex(4, true);
-				channel->SetLimit(std::atoi(limit.c_str()));
+				channel->setModeAtIndex(4, true);
+				channel->setLimit(std::atoi(limit.c_str()));
 				if(!arguments.empty())
 					arguments += " ";
 				arguments += limit;
-				param =  mode_toAppend(chain, opera, 'l');
+				param =  modeToAppend(chain, opera, 'l');
 			}
 		}
 		else
-			_sendResponse(ERR_NEEDMODEPARM(channel->GetName(),"(l)"),fd);
+			_sendResponse(channel->getName() + " * You must specify a parameter for the key mode. (l)\r\n",fd);
 	}
 	else if (opera == '-' && channel->getModeAtindex(4))
 	{
-		channel->setModeAtindex(4, false);
-		channel->SetLimit(0);
-		param  = mode_toAppend(chain, opera, 'l');
+		channel->setModeAtIndex(4, false);
+		channel->setLimit(0);
+		param  = modeToAppend(chain, opera, 'l');
 	}
 	return param;
 }
