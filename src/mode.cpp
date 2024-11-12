@@ -6,7 +6,7 @@
 /*   By: anttorre <anttorre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 15:30:25 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/11/12 15:38:47 by anttorre         ###   ########.fr       */
+/*   Updated: 2024/11/12 15:46:38 by anttorre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -244,10 +244,10 @@ std::string Server::operatorPrivilege(std::vector<std::string> splited, Channel 
 	}
 	if (opera == '+')
 	{
-		channel->setModeAtindex(3,true);
-		if(channel->change_clientToAdmin(user))
+		channel->setModeAtIndex(3,true);
+		if (channel->changeClientToAdmin(user))
 		{
-			param = mode_toAppend(chain, opera, 'o');
+			param = modeToAppend(chain, opera, 'o');
 			if(!arguments.empty())
 				arguments += " ";
 			arguments += user;
@@ -255,14 +255,13 @@ std::string Server::operatorPrivilege(std::vector<std::string> splited, Channel 
 	}
 	else if (opera == '-')
 	{
-		channel->setModeAtindex(3,false);
-		if(channel->change_adminToClient(user))
+		channel->setModeAtIndex(3,false);
+		if (channel->changeAdminToClient(user))
 		{
-			param = mode_toAppend(chain, opera, 'o');
+			param = modeToAppend(chain, opera, 'o');
 				if(!arguments.empty())
 					arguments += " ";
 			arguments += user;
-
 		}
 	}
 	return param;
