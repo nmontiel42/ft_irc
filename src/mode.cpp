@@ -6,7 +6,7 @@
 /*   By: anttorre <anttorre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 15:30:25 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/11/11 16:25:33 by anttorre         ###   ########.fr       */
+/*   Updated: 2024/11/12 15:38:47 by anttorre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,12 @@ std::string Server::modeToAppend(std::string chain, char opera, char mode)
 
 	ss.clear();
 	char last = '\0';
-	for(size_t i = 0; i < chain.size(); i++)
+	for (size_t i = 0; i < chain.size(); i++)
 	{
-		if(chain[i] == '+' || chain[i] == '-')
+		if (chain[i] == '+' || chain[i] == '-')
 			last = chain[i];
 	}
-	if(last != opera)
+	if (last != opera)
 		ss << opera << mode;
 	else
 		ss << mode;
@@ -36,14 +36,14 @@ void Server::getCmdArgs(std::string cmd,std::string& name, std::string& modeset 
 	stm >> name;
 	stm >> modeset;
 	size_t found = cmd.find_first_not_of(name + modeset + " \t\v");
-	if(found != std::string::npos)
+	if (found != std::string::npos)
 		params = cmd.substr(found);
 }
 
 
 std::vector<std::string> Server::splitParams(std::string params)
 {
-	if(!params.empty() && params[0] == ':')
+	if (!params.empty() && params[0] == ':')
 		params.erase(params.begin());
 	std::vector<std::string> tokens;
 	std::string param;
@@ -70,7 +70,7 @@ void Server::mode(std::string& cmd, int fd)
 	mode_chain.clear();
 	Client *cli = getClient(fd);
 	size_t found = cmd.find_first_not_of("MODEmode \t\v");
-	if(found != std::string::npos)
+	if (found != std::string::npos)
 		cmd = cmd.substr(found);
 	else
 	{
@@ -79,7 +79,7 @@ void Server::mode(std::string& cmd, int fd)
 	}
 	getCmdArgs(cmd ,channelName, modeset ,params);
 	std::vector<std::string> tokens = splitParams(params);
-	if(channelName[0] != '#' || !(channel = getChannel(channelName.substr(1))))
+	if (channelName[0] != '#' || !(channel = getChannel(channelName.substr(1))))
 	{
 		_sendResponse(cli->getNickName() + channel->getName() + " :No such channel\r\n", fd);
 		return ;
@@ -100,16 +100,16 @@ void Server::mode(std::string& cmd, int fd)
 		_sendResponse(channel->getName() + " :You're not a channel operator\r\n", fd);
 		return ;
 	}
-	else if(channel)
+	else if (channel)
 	{
 		size_t pos = 0;
-		for(size_t i = 0; i < modeset.size(); i++)
+		for (size_t i = 0; i < modeset.size(); i++)
 		{
-			if(modeset[i] == '+' || modeset[i] == '-')
+			if (modeset[i] == '+' || modeset[i] == '-')
 				opera = modeset[i];
 			else
 			{
-				if(modeset[i] == 'i')//invite mode
+				if (modeset[i] == 'i')//invite mode
 					mode_chain << inviteOnly(channel , opera, mode_chain.str());
 				else if (modeset[i] == 't') //topic restriction mode
 					mode_chain << topicRestriction(channel, opera, mode_chain.str());
@@ -125,7 +125,7 @@ void Server::mode(std::string& cmd, int fd)
 		}
 	}
 	std::string chain = mode_chain.str();
-	if(chain.empty())
+	if (chain.empty())
 		return ;
 	channel->sendToAll(cli->getHostName() + " MODE #" + channel->getName() + " " + channel->getModes() + " " + arguments + "\r\n");
 	
@@ -135,7 +135,7 @@ std::string Server::inviteOnly(Channel *channel, char opera, std::string chain)
 {
 	std::string param;
 	param.clear();
-	if(opera == '+' && !channel->getModeAtindex(0))
+	if (opera == '+' && !channel->getModeAtindex(0))
 	{
 		channel->setModeAtIndex(0, true);
 		channel->setInvitOnly(1);
@@ -154,7 +154,7 @@ std::string Server::topicRestriction(Channel *channel ,char opera, std::string c
 {
 	std::string param;
 	param.clear();
-	if(opera == '+' && !channel->getModeAtindex(1))
+	if (opera == '+' && !channel->getModeAtindex(1))
 	{
 		channel->setModeAtIndex(1, true);
 		channel->setTopicRestriction(true);
@@ -175,7 +175,7 @@ bool validPassword(std::string password)
 		return false;
 	for (size_t i = 0; i < password.size(); i++)
 	{
-		if(!std::isalnum(password[i]) && password[i] != '_')
+		if (!std::isalnum(password[i]) && password[i] != '_')
 			return false;
 	}
 	return true;
@@ -188,19 +188,19 @@ std::string Server::passwordMode(std::vector<std::string> tokens, Channel *chann
 
 	param.clear();
 	pass.clear();
-	if(tokens.size() > pos)
+	if (tokens.size() > pos)
 		pass = tokens[pos++];
 	else
 	{
 		_sendResponse(channel->getName() + " * You must specify a parameter for the key mode. (k)\r\n" ,fd);
 		return param;
 	}
-	if(!validPassword(pass))
+	if (!validPassword(pass))
 	{
 		_sendResponse(channel->getName() + " Invalid mode parameter. (k)\r\n", fd);
 		return param;
 	}
-	if(opera == '+')
+	if (opera == '+')
 	{
 		channel->setModeAtIndex(2, true);
 		channel->setPassword(pass);
@@ -230,19 +230,19 @@ std::string Server::operatorPrivilege(std::vector<std::string> splited, Channel 
 
 	param.clear();
 	user.clear();
-	if(splited.size() > pos)
+	if (splited.size() > pos)
 		user = splited[pos++];
 	else
 	{
-		_sendResponse(ERR_NEEDMODEPARM(channel->GetName(),"(o)"),fd);
+		_sendResponse(channel->getName() + " * You must specify a parameter for the key mode. (o)\r\n",fd);
 		return param;
 	}
-	if(!channel->clientInChannel(user))
+	if (!channel->clientInChannel(user))
 	{
-		_sendResponse(ERR_NOSUCHNICK(channel->GetName(), user),fd);
+		_sendResponse(channel->getName() + " " + user + " :No such nick/channel\r\n",fd);
 		return param;
 	}
-	if(opera == '+')
+	if (opera == '+')
 	{
 		channel->setModeAtindex(3,true);
 		if(channel->change_clientToAdmin(user))
