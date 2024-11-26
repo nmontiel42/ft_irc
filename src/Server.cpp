@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2024/11/05 13:40:49 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/11/26 16:23:31 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -246,10 +246,10 @@ void Server::parse_exec_cmd(std::string &cmd, int fd)
             privmsg(cmd, fd);
         else if (splited_cmd.size() && (splited_cmd[0] == "INVITE" || splited_cmd[0] == "invite"))
             invite(cmd, fd);
-        /* else if (splited_cmd.size() && (splited_cmd[0] == "TOPIC" || splited_cmd[0] == "topic"))
-            topic(cmd, fd); */
-       /*  else if (splited_cmd.size() && (splited_cmd[0] == "MODE" || splited_cmd[0] == "mode"))
-            mode(cmd, fd); */
+        else if (splited_cmd.size() && (splited_cmd[0] == "TOPIC" || splited_cmd[0] == "topic"))
+            topic(cmd, fd);
+        else if (splited_cmd.size() && (splited_cmd[0] == "MODE" || splited_cmd[0] == "mode"))
+            mode(cmd, fd);
         else
             _sendResponse(getClient(fd)->getNickName() + splited_cmd[0] + " :Invalid command\n", fd);
     }

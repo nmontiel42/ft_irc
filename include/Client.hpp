@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/16 12:54:30 by antferna          #+#    #+#             */
-/*   Updated: 2024/10/29 14:05:26 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/11/26 16:40:10 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ class Client
 		std::string 				ipadd;
 		bool						registered;
 		bool						logedin;
-		//bool						isOperator; // for future implementation
+		bool						isOperator;
 		std::vector<std::string> 	ChannelsInvite;
 
 	public:

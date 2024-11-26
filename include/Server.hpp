@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anttorre <anttorre@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/29 17:08:42 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/11/11 12:52:16 by anttorre         ###   ########.fr       */
+/*   Updated: 2024/11/26 16:23:46 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,7 @@ class Server
         void join(std::string cmd, int fd);
 		void invite(std::string &cmd, int &fd);
 
-        //*----------------------TOPIC----------------------*//
+        //*----------------------TOPIC----------------------*// (done)
         std::string tTopic();
         void topic(std::string &cmd, int &fd);
         std::string getTopic(std::string &input);
@@ -133,7 +133,7 @@ class Server
         void privmsg(std::string cmd, int fd);
         void checkForChannelsClients(std::vector<std::string> &tmp, int fd);
 
-        //*----------------------MODE----------------------*//
+        //*----------------------MODE----------------------*// (done)
         void mode(std::string &cmd, int fd);
         std::string inviteOnly(Channel *channel, char opera, std::string chain);
         std::string topicRestriction(Channel *channel, char opera, std::string chain);

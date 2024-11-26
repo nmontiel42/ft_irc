@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/16 12:39:40 by antferna          #+#    #+#             */
-/*   Updated: 2024/10/17 11:44:37 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/11/26 16:41:33 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ Client::Client(){
     ipadd = "";
     registered = false;
     logedin = false;
-    //isOperator = false; // for future implementation
+    isOperator = false;
 }
 
 Client::Client(int fd, std::string username, std::string nickname) : fd(fd), username(username), nickname(nickname) {}

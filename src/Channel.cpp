@@ -6,25 +6,22 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/16 15:38:55 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/10/29 13:57:06 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/11/26 16:30:58 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/Channel.hpp"
 
 Channel::Channel()
-{
-    this->invit_only = 0;
-    this->topic = 0;
-    this->key = 0;
-    this->limit = 0;
-    this->topic_restriction = false;
-    this->name = "";
-    this->topic_name = "";
+    : invit_only(0), topic(0), key(0), limit(0),
+      topic_restriction(false), name(""), created_at(""), topic_name("") {
+    // Inicialización explícita de cada elemento de `modes`
     char characters[5] = {'i', 't', 'k', 'o', 'l'};
-    for (int i = 0; i < 5; i++)
-        modes.push_back(std::make_pair(characters[i], false));
-    this->created_at = "";
+    for (int i = 0; i < 5; i++) {
+    // Crear un par y agregarlo al vector
+        std::pair<char, bool> p(characters[i], false);
+        modes.push_back(p);
+    }   
 }
 
 Channel::Channel(const Channel &other)

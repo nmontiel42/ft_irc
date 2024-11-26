@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 15:05:06 by antferna          #+#    #+#             */
-/*   Updated: 2024/10/30 15:34:56 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/11/26 17:06:16 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,7 @@ void Server::ExistCh(std::vector<std::pair<std::string, std::string> > &token, i
     }
     if(!this->channels[j].getPassword().empty() && this->channels[j].getPassword() != token[i].second)
     {
-        if(IsInvited(getClient(fd), token[i].first, 0))
+        if(!IsInvited(getClient(fd), token[i].first, 0))
         {
             senderror(getClient(fd)->getNickName(), "#" + token[i].first, getClient(fd)->getFd(), " :Wrong password\n");
             return;
@@ -181,16 +181,17 @@ void Server::join(std::string cmd, int fd)
     }
     for (size_t i = 0; i < token.size(); i++)
     {
-        int j = 0;
-        for (j = 0; j < (int)this->channels.size(); j++)
+        bool flag = false;
+        for (int j = 0; j < (int)this->channels.size(); j++)
         {
             if(this->channels[j].getName() == token[i].first)
             {
                 ExistCh(token, i, j, fd);
+                flag = true;
                 break;
             }
         }
-        if(j == (int)this->channels.size())
+        if(!flag)
             NotExistCh(token, i, fd);
     }
 }
