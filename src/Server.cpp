@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2024/11/26 16:23:31 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/12/04 13:04:34 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,6 +178,9 @@ void Server::accept_new_client(){
         throw(std::runtime_error("accept() failed"));
     if (fcntl(incoming_fd, F_SETFL, O_NONBLOCK) == -1)
         throw(std::runtime_error("failed to set option (O_NONBLOCK) on socket"));
+    std::string welcome = "HOW TO SIGN UP:\r\n 1.PASS <password> \r\n 2.NICK <nickname>\r\n 3.USER <username> <nickname> <password> <name>\r\n(In differents lines)\r\n";
+    if (send(incoming_fd, welcome.c_str(), welcome.size(), 0) == -1)
+        throw(std::runtime_error("send() failed"));
     new_cli.fd = incoming_fd;
     new_cli.events = POLLIN;
     new_cli.revents = 0;
@@ -486,7 +489,8 @@ void Server::set_username(std::string &cmd, int fd)
     if (cli && cli->getRegistered() && !cli->getUserName().empty() && !cli->getNickName().empty() && cli->getNickName() != "*" && !cli->getLogedIn())
     {
         cli->setLogedIn(true);
-        _sendResponse(cli->getNickName() + ": Welcome to the IRC server!\r\n", fd);
+        _sendResponse("Welcome to the IRC server!\r\n", fd);
+        _sendResponse("Use /help to see the commands!\r\n", fd);
     }
 }
 
@@ -546,8 +550,8 @@ void Server::set_nickname(std::string cmd, int fd)
             if (oldNick == "*" && !cli->getUserName().empty())  // Primer apodo
             {
                 cli->setLogedIn(true);
-                _sendResponse(cli->getNickName() + ": Welcome to the IRC server!\r\n", fd);
-                _sendResponse(cli->getNickName() + ": Nickname established: " + cmd + "\r\n", fd);
+                _sendResponse("Welcome to the IRC server!\r\n", fd);
+                _sendResponse("Nickname established: " + cmd + "\r\n", fd);
             }
             else  // Cambio de apodo
             {
@@ -565,7 +569,7 @@ void Server::set_nickname(std::string cmd, int fd)
     if (cli && cli->getRegistered() && !cli->getUserName().empty() && !cli->getNickName().empty() && cli->getNickName() != "*" && !cli->getLogedIn())
     {
         cli->setLogedIn(true);
-        _sendResponse(cli->getNickName() + ": Welcome to the IRC server!\r\n", fd);
+        _sendResponse("Welcome to the IRC server!\r\n", fd);
     }
 }
 
