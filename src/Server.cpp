@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anttorre <anttorre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2024/12/04 13:04:34 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/12/04 16:44:55 by anttorre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,6 @@ void Server::addFds(pollfd newFd)
     this->fds.push_back(newFd);
 }
 
-
 /*------------------FUNCTIONS---------------------*/
 
 void Server::init(int port, std::string pass)
@@ -128,7 +127,7 @@ void Server::init(int port, std::string pass)
 	while (Server::Signal == false)
 	{
 		if (poll(&fds[0], fds.size(), -1) == -1)
-			throw(std::runtime_error("Poll failed."));
+			throw std::exception("Poll failed");
 		for (size_t i = 0; i < fds.size(); i++)
 		{
 			if (fds[i].revents & POLLIN)
@@ -153,7 +152,7 @@ void Server::set_server_socket()
     server_fdsocket = socket(AF_INET, SOCK_STREAM, 0);
     
     if (server_fdsocket == -1)
-        throw(std::runtime_error("failed to create socket"));
+		throw GeneralExceptions("failed to create socket");
     if (setsockopt(server_fdsocket, SOL_SOCKET, SO_REUSEADDR, &en, sizeof(en)) == -1)
         throw(std::runtime_error("failed to set option (SO_REUSEADDR) on socket"));
     if (fcntl(server_fdsocket, F_SETFL, O_NONBLOCK) == -1)
@@ -260,7 +259,6 @@ void Server::parse_exec_cmd(std::string &cmd, int fd)
         _sendResponse(std::string("*") + "Error: Not registered\n", fd);
 }
 
-
 /* ------------------REMOVE FUNCTIONS------------------*/
 void Server::RemoveClient(int fd)
 {
@@ -357,7 +355,6 @@ std::vector<std::string> Server::split_recievedBuffer(std::string str)
     return vec;
 }
 
-
 /*------------------SEND FUNCTIONS------------------*/
 
 void Server::_sendResponse(std::string response, int fd)
@@ -384,7 +381,6 @@ void Server::senderror(std::string clientname, std::string channelname, int fd, 
         std::cerr << "send() failed" << std::endl;
 }
 
-
 /*------------------SIGNALS AND CLOSE------------------*/
 
 bool Server::Signal = false;
@@ -409,7 +405,6 @@ void Server::close_fds()
         close(server_fdsocket);
     }
 }
-
 
 /*------------------AUTHENTICATION SYSTEM------------------*/
 
@@ -572,7 +567,6 @@ void Server::set_nickname(std::string cmd, int fd)
         _sendResponse("Welcome to the IRC server!\r\n", fd);
     }
 }
-
 
 /*------------------COMMANDS------------------*/
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anttorre <anttorre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/29 17:08:42 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/11/26 16:23:46 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/12/04 16:42:06 by anttorre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,5 +148,22 @@ class Server
         //*----------------------COMMANDS----------------------*// (done)
         void findSubString(std::string cmd, std::string tofind, std::string &str);
         std::string splitCommand(std::string &cmd, std::vector<std::string> &tmp);
+
+		//*----------------------EXCEPTION----------------------*//
+		class GeneralExceptions : public std::exception
+		{
+			private:
+				std::string message;
+
+			public:
+				explicit GeneralExceptions(const std::string& msg) : message(msg)
+				{
+				}
+				
+				const char* what() const noexcept override
+				{
+					return message.c_str();
+				}
+		};
 };
 
