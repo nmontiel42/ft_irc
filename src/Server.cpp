@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2024/12/04 13:04:34 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/12/04 17:39:27 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -253,11 +253,15 @@ void Server::parse_exec_cmd(std::string &cmd, int fd)
             topic(cmd, fd);
         else if (splited_cmd.size() && (splited_cmd[0] == "MODE" || splited_cmd[0] == "mode"))
             mode(cmd, fd);
+        else if (splited_cmd.size() && (splited_cmd[0] == "HELP" || splited_cmd[0] == "help"))
+        {
+            _sendResponse("List of commands and how to use them:\nJOIN: JOIN <#channel>\nINVITE: INVITE <nickname> <#channel>\nPART: PART <#channel> <reason>\nKICK: KICK <#channel> <nickname> <reason>\nPRIVMSG: PRIVMSG <#channel> <message>\nMODE: MODE <#channel> <mode>\nTOPIC: TOPIC <#channel> <topic>\nQUITE: QUIT <reason>\n", fd);
+        }
         else
-            _sendResponse(getClient(fd)->getNickName() + splited_cmd[0] + " :Invalid command\n", fd);
+            _sendResponse(CYA + getClient(fd)->getNickName()+ WHI + " " + splited_cmd[0] + ": " RED + "Invalid command\n" + WHI, fd);
     }
     else if (!notRegistered(fd))
-        _sendResponse(std::string("*") + "Error: Not registered\n", fd);
+        _sendResponse("Error: Not registered\n", fd);
 }
 
 
@@ -369,7 +373,7 @@ void Server::_sendResponse(std::string response, int fd)
 void Server::senderror(std::string clientname, int fd, std::string msg)
 {
     std::stringstream ss;
-    ss << "Error: " << clientname << msg;
+    ss << RED << "Error: "<< WHI << clientname << msg;
     std::string resp = ss.str();
     if (send(fd, resp.c_str(), resp.size(), 0) == -1)
         std::cerr << "send() failed" << std::endl;
@@ -378,7 +382,7 @@ void Server::senderror(std::string clientname, int fd, std::string msg)
 void Server::senderror(std::string clientname, std::string channelname, int fd, std::string msg)
 {
     std::stringstream ss;
-    ss << "Error: " << clientname << "" << channelname << msg;
+    ss << RED << "Error: " << WHI << clientname << "" << channelname << msg;
     std::string resp = ss.str();
     if (send(fd, resp.c_str(), resp.size(), 0) == -1)
         std::cerr << "send() failed" << std::endl;
@@ -490,7 +494,7 @@ void Server::set_username(std::string &cmd, int fd)
     {
         cli->setLogedIn(true);
         _sendResponse("Welcome to the IRC server!\r\n", fd);
-        _sendResponse("Use /help to see the commands!\r\n", fd);
+        _sendResponse("Use 'help' to see the commands!\r\n", fd);
     }
 }
 
