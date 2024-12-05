@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2024/12/05 15:42:35 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/12/05 16:00:21 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -462,14 +462,14 @@ void Server::client_authen(int fd, std::string cmd)
             cmd.erase(cmd.begin());
     }
     if (pos == std::string::npos || cmd.empty())
-        _sendResponse(std::string("*") + ": Not enough parrameters.\r\n", fd);
+        _sendResponse(RED + std::string("*") + ": Not enough parrameters.\r\n" + WHI, fd);
     else if(!cli->getRegistered())
     {
         std::string pass = cmd;
         if (pass == password)
             cli->setRegistered(true);
         else
-            _sendResponse(std::string("*") + ": Password incorect!\r\n", fd);
+            _sendResponse(RED + std::string("*") + ": Password incorect!\r\n" + WHI, fd);
     }
     else
     _sendResponse(getClient(fd)->getNickName() + ": You are already registered!\r\n", fd);
@@ -486,7 +486,7 @@ void Server::set_username(std::string &cmd, int fd)
         return ;
     }
     if (!cli || !cli->getRegistered())
-        _sendResponse(std::string("*") + "You are not registered!\r\n", fd);
+        _sendResponse(RED + std::string("*") + "You are not registered!\r\n" + WHI, fd);
     else if (cli && !cli->getUserName().empty())
     {
         _sendResponse(cli->getNickName() + ": You are already registered!\r\n", fd);
@@ -510,7 +510,7 @@ void Server::set_nickname(std::string cmd, int fd)
     size_t pos = cmd.find_first_not_of("\t\v ");
     if (pos == std::string::npos || pos >= cmd.size()) 
     {
-        _sendResponse(std::string("*") + ": Not enough parameters.\r\n", fd);
+        _sendResponse(RED + std::string("*") + ": Not enough parameters.\r\n" + WHI, fd);
         return;
     }
 
@@ -521,7 +521,7 @@ void Server::set_nickname(std::string cmd, int fd)
     Client *cli = getClient(fd);
     if (cmd.empty())
     {
-        _sendResponse(std::string("*") + ": Not enough parameters.\r\n", fd);
+        _sendResponse(RED + std::string("*") + ": Not enough parameters.\r\n" + WHI, fd);
         return;
     }
 
@@ -530,13 +530,13 @@ void Server::set_nickname(std::string cmd, int fd)
         inUse = "*";
         if (cli->getNickName().empty())
             cli->setNickname(inUse);
-        _sendResponse(std::string(cmd) + ": Nickname is already in use\r\n", fd); 
+        _sendResponse(RED + std::string(cmd) + ": Nickname is already in use\r\n" + WHI, fd); 
         return;
     }
 
     if (!isValidNickName(cmd))  // Verifica si el apodo es válido
     {
-        _sendResponse(std::string(cmd) + ": Erroneus nickname.\r\n", fd);
+        _sendResponse(RED + std::string(cmd) + ": Wrong nickname.\r\n" + WHI, fd);
         return;
     }
 
@@ -563,7 +563,7 @@ void Server::set_nickname(std::string cmd, int fd)
             }
             else  // Cambio de apodo
             {
-                _sendResponse(oldNick + ": Nickname changed: " + cmd + "\r\n", fd);
+                _sendResponse("Your old nickname: " + oldNick + ", changed to: " + cmd + "\r\n", fd);
             }
             return;
         }
