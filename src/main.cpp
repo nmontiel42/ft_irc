@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anttorre <anttorre@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/15 10:53:07 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/12/05 11:34:22 by anttorre         ###   ########.fr       */
+/*   Updated: 2024/12/05 13:27:29 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,6 @@ int main (int argc, char **argv)
         ser.close_fds();
         std::cerr << e.what() << '\n';
     }
-    std::cout << "The server is closed!" << std::endl;
+    std::cout << RED << "The server is closed!" << WHI << std::endl;
     return 0;
 }

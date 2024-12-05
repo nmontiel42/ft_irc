@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 11:37:37 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/11/05 13:36:03 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/12/05 12:34:06 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,17 +78,6 @@ std::string SplitCmdPrivmsg(std::string cmd, std::vector<std::string> &tmp)
     }
     if (str[0] == ':')
         str.erase(str.begin());
-    else
-    {
-        for (size_t i = 0; i < str.size(); i++)
-        {
-            if (str[i] == ' ')
-            {
-                str = str.substr(0, i);
-                break ;
-            }
-        }
-    }
     return str;
 }
 
@@ -101,13 +90,13 @@ void Server::checkForChannelsClients(std::vector<std::string> &tmp, int fd)
             tmp[i].erase(tmp[i].begin());
             if (!getChannel(tmp[i]))
             {
-                senderror('#' + tmp[i], getClient(fd)->getFd(), ": Channel/Nick does not exist.\r\n");
+                senderror(YEL + '#' + tmp[i] + WHI, getClient(fd)->getFd(), ": Channel/Nick does not exist.\r\n");
                 tmp.erase(tmp.begin() + i);
                 i--;
             }
             else if (!getChannel(tmp[i])->getClientInChannel(getClient(fd)->getNickName()))
             {
-                senderror(getClient(fd)->getNickName(), '#' + tmp[i], getClient(fd)->getFd(), ": Cannot send to channel.\r\n");
+                senderror(CYA + getClient(fd)->getNickName(), YEL + '#' + tmp[i] + WHI, getClient(fd)->getFd(), ": Cannot send to channel.\r\n");
                 tmp.erase(tmp.begin() + i);
                 i--;
             }
@@ -133,17 +122,17 @@ void Server::privmsg(std::string cmd, int fd)
     msg = SplitCmdPrivmsg(cmd, tmp);
     if (!tmp.size())
     {
-        senderror(getClient(fd)->getNickName(), getClient(fd)->getFd(), ": Not enough parameters. Usage: PRIVMSG <#channel> <message>\r\n");
+        senderror(CYA + getClient(fd)->getNickName() + WHI, getClient(fd)->getFd(), ": Not enough parameters. Usage: PRIVMSG <#channel>/<user> <message>\r\n");
         return ;
     }
     if (msg.empty())
     {
-        senderror(getClient(fd)->getNickName(), getClient(fd)->getFd(), ": No message to send.\r\n");
+        senderror(CYA + getClient(fd)->getNickName() + WHI, getClient(fd)->getFd(), ": No message to send.\r\n");
         return ;
     }
     if (tmp.size() > 10)
     {
-        senderror(getClient(fd)->getNickName(), getClient(fd)->getFd(), ": Too many clients.\r\n");
+        senderror(CYA + getClient(fd)->getNickName() + WHI, getClient(fd)->getFd(), ": Too many clients.\r\n");
         return ;
     }
     checkForChannelsClients(tmp, fd);
@@ -152,12 +141,12 @@ void Server::privmsg(std::string cmd, int fd)
         if (tmp[i][0] == '#')
         {
             tmp[i].erase(tmp[i].begin());
-            std::string resp = getClient(fd)->getNickName() + " PRIVMSG #" + tmp[i] + " :" + msg + "\r\n";
+            std::string resp = CYA + getClient(fd)->getNickName() + YEL + "#" + tmp[i] + ": " + WHI + msg + "\r\n";
             getChannel(tmp[i])->sendToAll(resp, fd);
         }
         else
         {
-            std::string resp = getClient(fd)->getNickName() + " PRIVMSG " + tmp[i] + " :" + msg + "\r\n";
+            std::string resp = CYA + getClient(fd)->getNickName()+ MAG + "[whisp]: " + WHI + msg + "\r\n";
             _sendResponse(resp, getClientNick(tmp[i])->getFd());
         }
     }

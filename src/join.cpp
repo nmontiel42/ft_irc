@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 15:05:06 by antferna          #+#    #+#             */
-/*   Updated: 2024/12/04 16:44:21 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/12/05 12:46:13 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,14 +137,16 @@ void Server::ExistCh(std::vector<std::pair<std::string, std::string> > &token, i
     this->channels[j].addClient(*client);
     if(channels[j].getTopicName().empty())
     {
-        _sendResponse(getClient(fd)->getHostName() + GRE + " JOINED " + WHI + "#" + token[i].first + "\n" + \
-            "Users in this channel: " + channels[j].clientChannelList() + "\n", fd);
-    }else{
-        _sendResponse(getClient(fd)->getHostName() + GRE + " JOINED " + WHI + "#" + token[i].first + "\n" + \
-            getClient(fd)->getNickName() + " #" + channels[j].getName() + " :" + channels[j].getTopicName() + "\n" + \
+        _sendResponse(getClient(fd)->getHostName() + GRE + " JOINED " + YEL + "#" + token[i].first + WHI + "\n" + \
             "Users in this channel: " + channels[j].clientChannelList() + "\n", fd);
     }
-    channels[j].sendToAll(getClient(fd)->getHostName() + GRE + " JOINED " + WHI + "#" + token[i].first + "\n", fd);
+    else
+    {
+        _sendResponse(getClient(fd)->getHostName() + GRE + " JOINED " + YEL + "#" + token[i].first + WHI + "\n" + \
+            YELB + "Topic of this channel: " + WHI + channels[j].getTopicName() + "\n" + \
+            YELB + "Users in this channel: " + WHI + channels[j].clientChannelList() + "\n", fd);
+    }
+    channels[j].sendToAll(getClient(fd)->getHostName() + GRE + " JOINED " + YEL + "#" + token[i].first + WHI + "\n", fd);
 }
 
 void Server::NotExistCh(std::vector<std::pair<std::string, std::string> >&token, int i, int fd)
@@ -159,8 +161,8 @@ void Server::NotExistCh(std::vector<std::pair<std::string, std::string> >&token,
     newChannel.addAdmin(*getClient(fd));
     newChannel.setCreationTime();
     this->channels.push_back(newChannel);
-    _sendResponse(getClient(fd)->getHostName()  + GRE + " JOINED " + WHI + "#" + newChannel.getName() + "\n" + \
-         "Users in this channel: " + newChannel.clientChannelList() + "\n", fd);
+    _sendResponse(getClient(fd)->getHostName()  + GRE + " JOINED " + YEL + "#" + newChannel.getName() + WHI + "\n" + \
+         YELB + "Users in this channel: " + WHI + newChannel.clientChannelList() + "\n", fd);
 }
 
 void Server::join(std::string cmd, int fd)

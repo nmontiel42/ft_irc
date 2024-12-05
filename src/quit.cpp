@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/29 12:25:46 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/10/29 14:01:56 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/12/05 13:32:13 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ void Server::quit(std::string cmd, int fd)
             }
         }
     }
-    std::cout << "Client <" << fd << "> Disconnected" << std::endl;
+    std::cout << "Client " << RED << "<" << fd << "> Disconnected" << WHI << std::endl;
     RmChannels(fd);
     RemoveClient(fd);
     RemoveFds(fd);

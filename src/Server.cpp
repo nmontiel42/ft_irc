@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anttorre <anttorre@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2024/12/05 11:28:43 by anttorre         ###   ########.fr       */
+/*   Updated: 2024/12/05 13:31:29 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,7 +123,7 @@ void Server::init(int port, std::string pass)
 	this->port = port;
 
 	set_server_socket();
-	std::cout << "Server Running. Waiting for connections" << std::endl;
+	std::cout << BLU << "Server Running. Waiting for connections" << WHI << std::endl;
 	while (Server::Signal == false)
 	{
 		if (poll(&fds[0], fds.size(), -1) == -1)
@@ -187,7 +187,7 @@ void Server::accept_new_client(){
     newClient.setIpAdd(inet_ntoa(cliadd.sin_addr));
     clients.push_back(newClient);
     fds.push_back(new_cli);
-    std::cout <<"New client <" << incoming_fd << "> connected from " << newClient.getIpAdd() << std::endl;    
+    std::cout <<"New client " << GRE << "<" << incoming_fd << "> connected" << WHI << " from " << newClient.getIpAdd() << std::endl;    
 }
 
 void Server::recieveNewData(int fd)
@@ -199,7 +199,7 @@ void Server::recieveNewData(int fd)
 	ssize_t bytes = recv(fd, buff, sizeof(buff) - 1 , 0);
 	if(bytes <= 0)
 	{
-		std::cout << "Client[" << fd << "] " << "<" << cli->getNickName() << "> disconnected." << std::endl;
+		std::cout << "Client[" << fd << "] " << "<" << cli->getNickName() << "> " << RED << "disconnected." << WHI << std::endl;
 		RmChannels(fd);
 		RemoveClient(fd);
 		RemoveFds(fd);
@@ -385,6 +385,15 @@ void Server::senderror(std::string clientname, std::string channelname, int fd, 
         std::cerr << "send() failed" << std::endl;
 }
 
+void Server::senderror(int fd, std::string channelname, std::string msg)
+{
+    std::stringstream ss;
+    ss << RED << "Error: "<< WHI << msg << channelname << "\n";
+    std::string resp = ss.str();
+    if (send(fd, resp.c_str(), resp.size(), 0) == -1)
+        std::cerr << "send() failed" << std::endl;
+}
+
 /*------------------SIGNALS AND CLOSE------------------*/
 
 bool Server::Signal = false;
@@ -400,12 +409,12 @@ void Server::close_fds()
 {
     for(size_t i = 0; i < clients.size(); i++)
     {
-        std::cout << "Client <" << clients[i]. getFd() << "> Disconnected" << std::endl;
+        std::cout << "Client " << RED << "<" << clients[i]. getFd() << "> Disconnected" << WHI << std::endl;
         close(clients[i].getFd());
     }
     if (server_fdsocket != -1)
     {
-        std::cout << "Server <" << server_fdsocket << "> Disconnected" << std::endl;
+        std::cout << "Server " << RED << "<" << server_fdsocket << "> Disconnected" << WHI << std::endl;
         close(server_fdsocket);
     }
 }
@@ -488,28 +497,28 @@ void Server::set_username(std::string &cmd, int fd)
     if (cli && cli->getRegistered() && !cli->getUserName().empty() && !cli->getNickName().empty() && cli->getNickName() != "*" && !cli->getLogedIn())
     {
         cli->setLogedIn(true);
-        _sendResponse("Welcome to the IRC server!\r\n", fd);
-        _sendResponse("Use 'help' to see the commands!\r\n", fd);
+        _sendResponse("\e[1;36mWelcome to the IRC server!\e[0;37m\r\n", fd);
+        _sendResponse("Use \e[1;32m'help'\e[0;37m to see the commands!\r\n", fd);
     }
 }
 
 void Server::set_nickname(std::string cmd, int fd)
 {
     std::string inUse;
-    cmd = cmd.substr(4);  // Elimina "NICK "
+    cmd = cmd.substr(4);
     
-    size_t pos = cmd.find_first_not_of("\t\v ");  // Encuentra el primer carácter no espacio
-    if (pos == std::string::npos || pos >= cmd.size())  // Comprobación para no tener parámetros
+    size_t pos = cmd.find_first_not_of("\t\v ");
+    if (pos == std::string::npos || pos >= cmd.size()) 
     {
         _sendResponse(std::string("*") + ": Not enough parameters.\r\n", fd);
         return;
     }
 
-    cmd = cmd.substr(pos);  // Extrae el apodo, limpiando espacios al principio
-    if (cmd[0] == ':')  // Si el apodo empieza con ':', elimínalo
+    cmd = cmd.substr(pos);
+    if (cmd[0] == ':')
         cmd.erase(cmd.begin());
 
-    Client *cli = getClient(fd);  // Obtiene el cliente asociado con el socket fd
+    Client *cli = getClient(fd);
     if (cmd.empty())
     {
         _sendResponse(std::string("*") + ": Not enough parameters.\r\n", fd);

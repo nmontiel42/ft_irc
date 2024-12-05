@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 15:30:25 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/12/05 11:12:09 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/12/05 12:15:16 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,6 @@ void Server::mode(std::string& cmd, int fd)
 
     getCmdArgs(cmd, channelName, modeset, params);
 
-    // Nueva comprobación de parámetros vacíos
     if (modeset.empty() && params.empty())
     {
         _sendResponse(CYA + cli->getNickName() + WHI + ": Not enough parameters for MODE command.\r\n", fd);
@@ -98,19 +97,18 @@ void Server::mode(std::string& cmd, int fd)
         senderror(CYA + cli->getNickName() + WHI, channel->getName(), getClient(fd)->getFd(), ": You're not on that channel\r\n");
         return;
     }
-    else if (modeset.empty()) // Respuesta con los modos actuales del canal
+    else if (modeset.empty())
     {
         _sendResponse(cli->getNickName() + " #" + channel->getName() + " " + channel->getModes() + "\r\n" +
                       cli->getNickName() + " #" + channel->getName() + " " + channel->getCreationTime() + "\r\n", fd);
         return;
     }
-   	else if (!channel->getAdmin(fd)) // El cliente no es operador del canal
+   	else if (!channel->getAdmin(fd))
 	{
 		_sendResponse(YEL + channel->getName() + WHI + ": You're not a channel operator\r\n", fd);
 		return;
 	}
 
-	// Procesar modos y aplicar cambios
 	size_t pos = 0;
 	for (size_t i = 0; i < modeset.size(); i++)
 	{
@@ -118,7 +116,6 @@ void Server::mode(std::string& cmd, int fd)
 			opera = modeset[i];
 		else
 		{
-			// Si no hay operador antes del modo, devolver error
 			if (opera == '\0')
 			{
 				_sendResponse(CYA + cli->getNickName() + WHI + ": Invalid mode format, missing '+' or '-'.\r\n", fd);

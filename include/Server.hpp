@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anttorre <anttorre@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/29 17:08:42 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/12/05 11:30:35 by anttorre         ###   ########.fr       */
+/*   Updated: 2024/12/05 13:27:49 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,9 @@
 #define GRE "\e[1;32m"
 #define YEL "\e[1;33m"
 #define CYA "\e[1;36m"
-
-
+#define MAG "\e[1;35m"
+#define YELB "\e[1;93m"
+#define BLU "\e[1;34m"
 
 class Channel;
 
@@ -99,6 +100,7 @@ class Server
         void _sendResponse(std::string response, int fd);
         void senderror(std::string clientname, int fd, std::string);
         void senderror(std::string clientname, std::string channelname, int fd, std::string msg);
+        void senderror(int fd, std::string channelname, std::string msg);
 
         //*----------------------Close and Signals----------------------*// (done)
         static void Signalhandler(int signum);

@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/29 13:18:41 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/11/05 13:07:52 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/12/05 12:07:11 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,24 +42,13 @@ int Server::SplitCmdPart(std::string cmd, std::vector<std::string> &tmp, std::st
     }
     if (reason[0] == ':')
         reason.erase(reason.begin());
-    else
-    {
-        for(size_t i = 0; i < reason.size(); i++)
-        {
-            if (reason[i] == ' ')
-            {
-                reason = reason.substr(0, i);
-                break ;
-            }
-        }
-    }
     for (size_t i = 0; i < tmp.size(); i++)
     {
         if (*(tmp[i].begin()) == '#')
             tmp[i].erase(tmp[i].begin());
         else
         {
-            senderror(getClient(fd)->getNickName(), tmp[i], getClient(fd)->getFd(), " :Invalid channel name\n");
+            senderror(getClient(fd)->getFd(), tmp[i], "Invalid channel name: ");
             tmp.erase(tmp.begin() + i--);
         }
     }
@@ -72,7 +61,7 @@ void Server::part(std::string cmd, int fd)
     std::string reason;
     if (!SplitCmdPart(cmd, tmp, reason, fd))
     {
-        senderror(getClient(fd)->getNickName(), getClient(fd)->getFd(), " :Not enough parameters\n");
+        senderror(CYA + getClient(fd)->getNickName() + WHI, getClient(fd)->getFd(), ": Not enough parameters. Usage: part <channel> <optional_reason>\n");
         return;
     }
     for (size_t i = 0; i < tmp.size(); i++)
@@ -85,13 +74,13 @@ void Server::part(std::string cmd, int fd)
                 flag = true;
                 if (!channels[j].getClient(fd) && !channels[j].getAdmin(fd))
                 {
-                    senderror(getClient(fd)->getNickName(), tmp[i], getClient(fd)->getFd(), " :You are not in this channel\n");
+                    senderror(getClient(fd)->getFd(), tmp[i], "You are not in this channel: ");
                     continue;
                 }
                 std::stringstream ss;
-                ss << getClient(fd)->getNickName() << " PART #" << tmp[i];
+                ss << CYA << getClient(fd)->getNickName() << WHI << " left channel:" << YEL << " #" << tmp[i] << WHI;
                 if (!reason.empty())
-                    ss << " :" << reason << "\r\n";
+                    ss << "reason: " << reason << "\r\n";
                 else
                     ss << "\r\n";
                 channels[j].sendToAll(ss.str());
@@ -104,6 +93,6 @@ void Server::part(std::string cmd, int fd)
             }
         }
         if (!flag)
-            senderror(getClient(fd)->getNickName(), tmp[i], getClient(fd)->getFd(), " :No such channel\n");
+            senderror(CYA + getClient(fd)->getNickName() + WHI + " ", tmp[i], getClient(fd)->getFd(), ": No such channel\n");
     }
 }
