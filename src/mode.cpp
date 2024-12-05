@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 15:30:25 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/12/04 17:36:25 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/12/05 11:12:09 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,7 +145,7 @@ void Server::mode(std::string& cmd, int fd)
     if (chain.empty())
         return;
 
-    channel->sendToAll(CYA + cli->getHostName() + WHI + ": MODE changed to: " + channel->getModes() + " " + arguments + ", in channel: " + YEL + channel->getName() + WHI + "\r\n");
+    channel->sendToAll(CYA + cli->getHostName() + WHI + ": " + GRE + "MODE" + WHI + " changed to: " + channel->getModes() + " " + arguments + ", in channel: " + YEL + channel->getName() + WHI + "\r\n");
 }
 
 

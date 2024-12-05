@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 11:03:27 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/12/04 18:03:09 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/12/05 11:12:36 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ void Server::kick(std::string cmd, int fd)
                 if (ch->getClientInChannel(user))
                 {
                     std::stringstream ss;
-                    ss << CYA << getClient(fd)->getNickName() << WHI << " KICK " << user << " from: " << YEL << tmp[i] << WHI;
+                    ss << CYA << getClient(fd)->getNickName() << GRE << " KICK " << WHI << user << " from: " << YEL << tmp[i] << WHI;
                     if (!reason.empty())
                         ss << ", reason: " << reason << "\r\n";
                     else
