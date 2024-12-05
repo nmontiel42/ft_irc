@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2024/12/05 13:31:29 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/12/05 13:36:51 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -177,7 +177,7 @@ void Server::accept_new_client(){
         throw GeneralExceptions("accept() failed");
     if (fcntl(incoming_fd, F_SETFL, O_NONBLOCK) == -1)
         throw GeneralExceptions("failed to set option (O_NONBLOCK) on socket");
-    std::string welcome = "HOW TO SIGN UP:\r\n 1.PASS <password> \r\n 2.NICK <nickname>\r\n 3.USER <username> <nickname> <password> <name>\r\n(In differents lines)\r\n";
+    std::string welcome = "HOW TO SIGN UP:\r\n 1.PASS <server_password> \r\n 2.NICK <nickname>\r\n 3.USER <username> <nickname> <password> <name>\r\n(In differents lines)\r\n";
     if (send(incoming_fd, welcome.c_str(), welcome.size(), 0) == -1)
         throw GeneralExceptions("send() failed");
     new_cli.fd = incoming_fd;
