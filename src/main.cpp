@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anttorre <anttorre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/15 10:53:07 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/10/17 17:56:48 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/12/05 11:34:22 by anttorre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,8 @@ bool isPortValid(std::string port)
 
 int main (int argc, char **argv)
 {
-    Server ser;
+	Server ser;
+	
     if (argc != 3)
     {
         std::cout << "Error: Usage: ./ircserv <port> <password>" << std::endl;

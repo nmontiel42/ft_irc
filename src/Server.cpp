@@ -6,7 +6,7 @@
 /*   By: anttorre <anttorre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2024/12/05 11:22:50 by anttorre         ###   ########.fr       */
+/*   Updated: 2024/12/05 11:28:43 by anttorre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,7 +127,7 @@ void Server::init(int port, std::string pass)
 	while (Server::Signal == false)
 	{
 		if (poll(&fds[0], fds.size(), -1) == -1)
-			throw std::exception("Poll failed");
+			throw GeneralExceptions("Poll failed");
 		for (size_t i = 0; i < fds.size(); i++)
 		{
 			if (fds[i].revents & POLLIN)
@@ -154,13 +154,13 @@ void Server::set_server_socket()
     if (server_fdsocket == -1)
 		throw GeneralExceptions("failed to create socket");
     if (setsockopt(server_fdsocket, SOL_SOCKET, SO_REUSEADDR, &en, sizeof(en)) == -1)
-        throw(std::runtime_error("failed to set option (SO_REUSEADDR) on socket"));
+        throw GeneralExceptions("failed to set option (SO_REUSEADDR) on socket");
     if (fcntl(server_fdsocket, F_SETFL, O_NONBLOCK) == -1)
-        throw(std::runtime_error("failed to set option (O_NONBLOCK) on socket"));
+        throw GeneralExceptions("failed to set option (O_NONBLOCK) on socket");
     if (bind(server_fdsocket, (struct sockaddr *)&add, sizeof(add)) == -1)
-        throw(std::runtime_error("failed to bind socket"));
+        throw GeneralExceptions("failed to bind socket");
     if (listen(server_fdsocket, SOMAXCONN) == -1)
-        throw(std::runtime_error("listen() failed"));
+        throw GeneralExceptions("listen() failed");
     new_cli.fd = server_fdsocket;
     new_cli.events = POLLIN;
     new_cli.revents = 0;
@@ -174,12 +174,12 @@ void Server::accept_new_client(){
     socklen_t len = sizeof(cliadd);
     int incoming_fd = accept(server_fdsocket, (struct sockaddr *)&cliadd, &len);
     if (incoming_fd == -1)
-        throw(std::runtime_error("accept() failed"));
+        throw GeneralExceptions("accept() failed");
     if (fcntl(incoming_fd, F_SETFL, O_NONBLOCK) == -1)
-        throw(std::runtime_error("failed to set option (O_NONBLOCK) on socket"));
+        throw GeneralExceptions("failed to set option (O_NONBLOCK) on socket");
     std::string welcome = "HOW TO SIGN UP:\r\n 1.PASS <password> \r\n 2.NICK <nickname>\r\n 3.USER <username> <nickname> <password> <name>\r\n(In differents lines)\r\n";
     if (send(incoming_fd, welcome.c_str(), welcome.size(), 0) == -1)
-        throw(std::runtime_error("send() failed"));
+        throw GeneralExceptions("send() failed");
     new_cli.fd = incoming_fd;
     new_cli.events = POLLIN;
     new_cli.revents = 0;

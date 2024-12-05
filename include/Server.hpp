@@ -6,7 +6,7 @@
 /*   By: anttorre <anttorre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/29 17:08:42 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/12/05 11:25:44 by anttorre         ###   ########.fr       */
+/*   Updated: 2024/12/05 11:30:35 by anttorre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,16 +161,17 @@ class Server
 		class GeneralExceptions : public std::exception
 		{
 			private:
-				std::string message;
+				const char* message;
 
 			public:
-				explicit GeneralExceptions(const std::string& msg) : message(msg)
+				explicit GeneralExceptions(const char* msg)
+					: message(msg)
 				{
 				}
-				
-				const char* what() const noexcept override
+
+				virtual const char* what() const throw()
 				{
-					return message.c_str();
+					return message;
 				}
 		};
 };

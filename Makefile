@@ -1,6 +1,6 @@
 NAME = ircserv
 CPP = g++
-FLAGS = -Wall -Wextra -Werror -std=c++98 -fsanitize=address,undefined
+FLAGS = -Wall -Wextra -Werror -std=c++98
 SRC = src/main.cpp \
 		src/Server.cpp \
 		src/Client.cpp \
