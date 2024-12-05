@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/29 12:25:46 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/12/05 13:32:13 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/12/05 15:53:24 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,17 +43,7 @@ std::string SplitQuit(std::string cmd)
     stm >> str;
     ClearCmd(cmd, str, reason);
     if (reason.empty())
-        return std::string("Quit");
-    if (reason[0] != ':')
-    {
-        for (size_t i = 0; i < reason.size(); i++)
-            if (reason[i] == ' ')
-            {
-                reason.erase(reason.begin() + i, reason.end());
-                break ;
-            }
-        reason.insert(reason.begin(), ':');
-    }
+        return std::string("");
     return reason;
 }
 
@@ -71,7 +61,7 @@ void Server::quit(std::string cmd, int fd)
                 channels.erase(channels.begin() + i);
             else
             {
-                std::string msg = getClient(fd)->getNickName() + " QUIT: " + reason + "\n";
+                std::string msg = CYA + getClient(fd)->getNickName() + WHI + " left the Server" + reason + "\n";
                 channels[i].sendToAll(msg);
             }
         }
@@ -82,12 +72,12 @@ void Server::quit(std::string cmd, int fd)
                 channels.erase(channels.begin() + i);
             else
             {
-                std::string msg = getClient(fd)->getNickName() + " QUIT: " + reason + "\n";
+                std::string msg = CYA + getClient(fd)->getNickName() + WHI + " left the Server" + reason + "\n";
                 channels[i].sendToAll(msg);
             }
         }
     }
-    std::cout << "Client " << RED << "<" << fd << "> Disconnected" << WHI << std::endl;
+    std::cout << "Client " RED << "<" << fd << "> Disconnected" << WHI << std::endl;
     RmChannels(fd);
     RemoveClient(fd);
     RemoveFds(fd);

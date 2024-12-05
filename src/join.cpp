@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 15:05:06 by antferna          #+#    #+#             */
-/*   Updated: 2024/12/05 12:46:13 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/12/05 15:17:28 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,7 +138,7 @@ void Server::ExistCh(std::vector<std::pair<std::string, std::string> > &token, i
     if(channels[j].getTopicName().empty())
     {
         _sendResponse(getClient(fd)->getHostName() + GRE + " JOINED " + YEL + "#" + token[i].first + WHI + "\n" + \
-            "Users in this channel: " + channels[j].clientChannelList() + "\n", fd);
+            YELB + "Users in this channel: " + WHI + channels[j].clientChannelList() + "\n", fd);
     }
     else
     {
