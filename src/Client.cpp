@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/16 12:39:40 by antferna          #+#    #+#             */
-/*   Updated: 2024/11/26 16:41:33 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/12/04 16:03:06 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ bool Client::getInviteChannel(std::string &ChName) {
 }
 
 std::string Client::getHostName() {
-    return this->getNickName() + "!" + this->getUserName() + "@" + this->getIpAdd();
+    return ( CYA + this->getNickName() + "(" + this->getUserName() + ")@" + this->getIpAdd() + WHI);
 }
 
 // SETTERS

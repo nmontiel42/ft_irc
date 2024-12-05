@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 15:30:25 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/11/26 16:58:59 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/12/05 11:12:09 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,78 +58,96 @@ std::vector<std::string> Server::splitParams(std::string params)
 
 void Server::mode(std::string& cmd, int fd)
 {
-	std::string channelName;
-	std::string params;
-	std::string modeset;
-	std::stringstream mode_chain;
-	std::string arguments = ":";
-	Channel *channel;
-	char opera = '\0';
+    std::string channelName;
+    std::string params;
+    std::string modeset;
+    std::stringstream mode_chain;
+    std::string arguments = ":";
+    Channel *channel;
+    char opera = '\0';
 
-	arguments.clear();
-	mode_chain.clear();
-	Client *cli = getClient(fd);
-	size_t found = cmd.find_first_not_of("MODEmode \t\v");
-	if (found != std::string::npos)
-		cmd = cmd.substr(found);
-	else
+    arguments.clear();
+    mode_chain.clear();
+    Client *cli = getClient(fd);
+    size_t found = cmd.find_first_not_of("MODEmode \t\v");
+    if (found != std::string::npos)
+        cmd = cmd.substr(found);
+    else
+    {
+        _sendResponse(CYA + cli->getNickName() + WHI + ": Not enough parameters.\r\n", fd);
+        return;
+    }
+
+    getCmdArgs(cmd, channelName, modeset, params);
+
+    // Nueva comprobación de parámetros vacíos
+    if (modeset.empty() && params.empty())
+    {
+        _sendResponse(CYA + cli->getNickName() + WHI + ": Not enough parameters for MODE command.\r\n", fd);
+        return;
+    }
+
+    std::vector<std::string> tokens = splitParams(params);
+    if (channelName[0] != '#' || !(channel = getChannel(channelName.substr(1))))
+    {
+        _sendResponse(CYA + cli->getNickName() + WHI + ": No such channel\r\n", fd);
+        return;
+    }
+    else if (!channel->getClient(fd) && !channel->getAdmin(fd))
+    {
+        senderror(CYA + cli->getNickName() + WHI, channel->getName(), getClient(fd)->getFd(), ": You're not on that channel\r\n");
+        return;
+    }
+    else if (modeset.empty()) // Respuesta con los modos actuales del canal
+    {
+        _sendResponse(cli->getNickName() + " #" + channel->getName() + " " + channel->getModes() + "\r\n" +
+                      cli->getNickName() + " #" + channel->getName() + " " + channel->getCreationTime() + "\r\n", fd);
+        return;
+    }
+   	else if (!channel->getAdmin(fd)) // El cliente no es operador del canal
 	{
-		_sendResponse(cli->getNickName() + " :Not enough parameters.\r\n" , fd); 
-		return ;
-	}
-	getCmdArgs(cmd ,channelName, modeset ,params);
-	std::vector<std::string> tokens = splitParams(params);
-	if (channelName[0] != '#' || !(channel = getChannel(channelName.substr(1))))
-	{
-		_sendResponse(cli->getNickName() + channel->getName() + " :No such channel\r\n", fd);
-		return ;
-	}
-	else if (!channel->getClient(fd) && !channel->getAdmin(fd))
-	{
-		senderror(cli->getNickName(), channel->getName(), getClient(fd)->getFd(), " :You're not on that channel\r\n");
+		_sendResponse(YEL + channel->getName() + WHI + ": You're not a channel operator\r\n", fd);
 		return;
 	}
-	else if (modeset.empty()) // response with the channel modes (MODE #channel)
+
+	// Procesar modos y aplicar cambios
+	size_t pos = 0;
+	for (size_t i = 0; i < modeset.size(); i++)
 	{
-		_sendResponse(cli->getNickName() + " #" + channel->getName() + " " + channel->getModes() + "\r\n" + \
-		cli->getNickName() + " #" + channel->getName() + " " + channel->getCreationTime() + "\r\n",fd);
-		return ;
-	}
-	else if (!channel->getAdmin(fd)) // client is not channel operator
-	{
-		_sendResponse(channel->getName() + " :You're not a channel operator\r\n", fd);
-		return ;
-	}
-	else if (channel)
-	{
-		size_t pos = 0;
-		for (size_t i = 0; i < modeset.size(); i++)
+		if (modeset[i] == '+' || modeset[i] == '-')
+			opera = modeset[i];
+		else
 		{
-			if (modeset[i] == '+' || modeset[i] == '-')
-				opera = modeset[i];
-			else
+			// Si no hay operador antes del modo, devolver error
+			if (opera == '\0')
 			{
-				if (modeset[i] == 'i')//invite mode
-					mode_chain << inviteOnly(channel , opera, mode_chain.str());
-				else if (modeset[i] == 't') //topic restriction mode
-					mode_chain << topicRestriction(channel, opera, mode_chain.str());
-				else if (modeset[i] == 'k') //password set/remove
-					mode_chain <<  passwordMode(tokens, channel, pos, opera, fd, mode_chain.str(), arguments);
-				else if (modeset[i] == 'o') //set/remove user operator privilege
-						mode_chain << operatorPrivilege(tokens, channel, pos, fd, opera, mode_chain.str(), arguments);
-				else if (modeset[i] == 'l') //set/remove channel limits
-					mode_chain << channelLimit(tokens, channel, pos, opera, fd, mode_chain.str(), arguments);
-				else
-					_sendResponse(cli->getNickName() + " #" + channel->getName() + " " + channel->getModes() + " :is not a recognised channel mode\r\n",fd);
+				_sendResponse(CYA + cli->getNickName() + WHI + ": Invalid mode format, missing '+' or '-'.\r\n", fd);
+				return;
 			}
+
+			if (modeset[i] == 'i') // Modo de invitación
+				mode_chain << inviteOnly(channel, opera, mode_chain.str());
+			else if (modeset[i] == 't') // Restricción de tema
+				mode_chain << topicRestriction(channel, opera, mode_chain.str());
+			else if (modeset[i] == 'k') // Establecer/eliminar contraseña
+				mode_chain << passwordMode(tokens, channel, pos, opera, fd, mode_chain.str(), arguments);
+			else if (modeset[i] == 'o') // Privilegio de operador
+				mode_chain << operatorPrivilege(tokens, channel, pos, fd, opera, mode_chain.str(), arguments);
+			else if (modeset[i] == 'l') // Límite del canal
+				mode_chain << channelLimit(tokens, channel, pos, opera, fd, mode_chain.str(), arguments);
+			else
+				_sendResponse(CYA + cli->getNickName() + ": " + YEL + "#" + channel->getName() + WHI + channel->getModes() + ": is not a recognised channel mode\r\n", fd);
 		}
 	}
-	std::string chain = mode_chain.str();
-	if (chain.empty())
-		return ;
-	channel->sendToAll(cli->getHostName() + " MODE #" + channel->getName() + " " + channel->getModes() + " " + arguments + "\r\n");
-	
+
+
+    std::string chain = mode_chain.str();
+    if (chain.empty())
+        return;
+
+    channel->sendToAll(CYA + cli->getHostName() + WHI + ": " + GRE + "MODE" + WHI + " changed to: " + channel->getModes() + " " + arguments + ", in channel: " + YEL + channel->getName() + WHI + "\r\n");
 }
+
 
 std::string Server::inviteOnly(Channel *channel, char opera, std::string chain)
 {
@@ -192,12 +210,12 @@ std::string Server::passwordMode(std::vector<std::string> tokens, Channel *chann
 		pass = tokens[pos++];
 	else
 	{
-		_sendResponse(channel->getName() + " * You must specify a parameter for the key mode. (k)\r\n" ,fd);
+		_sendResponse(YEL + channel->getName() + WHI + ": You must specify a parameter for the key mode. (k)\r\n" ,fd);
 		return param;
 	}
 	if (!validPassword(pass))
 	{
-		_sendResponse(channel->getName() + " Invalid mode parameter. (k)\r\n", fd);
+		_sendResponse(YEL + channel->getName() + WHI + " Invalid mode parameter. (k)\r\n", fd);
 		return param;
 	}
 	if (opera == '+')
@@ -218,34 +236,34 @@ std::string Server::passwordMode(std::vector<std::string> tokens, Channel *chann
 			param = modeToAppend(chain,opera, 'k');
 		}
 		else
-			_sendResponse(channel->getName() + " Channel key already set.\r\n",fd);
+			_sendResponse(YEL + channel->getName() + WHI + " Channel key already set.\r\n",fd);
 	}
 	return param;
 }
 
-std::string Server::operatorPrivilege(std::vector<std::string> splited, Channel *channel, size_t& pos, char opera, int fd, std::string chain, std::string& arguments)
+std::string Server::operatorPrivilege(std::vector<std::string> tokens, Channel *channel, size_t& pos, int fd, char opera, std::string chain, std::string& arguments)
 {
 	std::string user;
 	std::string param;
 
 	param.clear();
 	user.clear();
-	if (splited.size() > pos)
-		user = splited[pos++];
+	if(tokens.size() > pos)
+		user = tokens[pos++];
 	else
 	{
-		_sendResponse(channel->getName() + " * You must specify a parameter for the key mode. (o)\r\n",fd);
+		_sendResponse(YEL + channel->getName() + WHI + ": You must specify a parameter.\r\n",fd);
 		return param;
 	}
-	if (!channel->clientInChannel(user))
+	if(!channel->clientInChannel(user))
 	{
-		_sendResponse(channel->getName() + " " + user + " :No such nick/channel\r\n",fd);
+		_sendResponse(YEL + channel->getName() + WHI + ": " + user + ": No such nick/channel\r\n",fd);
 		return param;
 	}
-	if (opera == '+')
+	if(opera == '+')
 	{
 		channel->setModeAtIndex(3,true);
-		if (channel->changeClientToAdmin(user))
+		if(channel->changeClientToAdmin(user))
 		{
 			param = modeToAppend(chain, opera, 'o');
 			if(!arguments.empty())
@@ -256,12 +274,13 @@ std::string Server::operatorPrivilege(std::vector<std::string> splited, Channel 
 	else if (opera == '-')
 	{
 		channel->setModeAtIndex(3,false);
-		if (channel->changeAdminToClient(user))
+		if(channel->changeAdminToClient(user))
 		{
 			param = modeToAppend(chain, opera, 'o');
 				if(!arguments.empty())
 					arguments += " ";
 			arguments += user;
+
 		}
 	}
 	return param;
@@ -285,7 +304,7 @@ std::string Server::channelLimit(std::vector<std::string> tokens,  Channel *chan
 		{
 			limit = tokens[pos++];
 			if (!isValidLimit(limit))
-				_sendResponse(channel->getName() + " Invalid mode parameter. (l)\r\n", fd);
+				_sendResponse(YEL + channel->getName() + WHI + " Invalid mode parameter. (l)\r\n", fd);
 			else
 			{
 				channel->setModeAtIndex(4, true);
@@ -297,7 +316,7 @@ std::string Server::channelLimit(std::vector<std::string> tokens,  Channel *chan
 			}
 		}
 		else
-			_sendResponse(channel->getName() + " * You must specify a parameter for the key mode. (l)\r\n",fd);
+			_sendResponse(YEL + channel->getName() + WHI + " * You must specify a parameter for the key mode. (l)\r\n",fd);
 	}
 	else if (opera == '-' && channel->getModeAtindex(4))
 	{

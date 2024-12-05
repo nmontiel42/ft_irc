@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 15:05:06 by antferna          #+#    #+#             */
-/*   Updated: 2024/11/26 17:06:16 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/12/04 16:44:21 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ int Server::SplitJoin(std::vector<std::pair<std::string, std::string> > &token, 
     {
         if(*(token[i].first.begin()) != '#')
         {
-            senderror(getClient(fd)->getNickName(), token[i].first, getClient(fd)->getFd(), " :Invalid channel name\n");
+            senderror(CYA + getClient(fd)->getNickName() + WHI + ": ", token[i].first, getClient(fd)->getFd(), ": Invalid channel name\n");
             token.erase(token.begin() + i--);
         }
         else
@@ -108,14 +108,14 @@ void Server::ExistCh(std::vector<std::pair<std::string, std::string> > &token, i
         return;
     if(SearchForClients(getClient(fd)->getNickName()) >= 10)
     {
-        senderror(getClient(fd)->getNickName(), getClient(fd)->getFd(), " :You are in too many channels\n");
+        senderror(CYA + getClient(fd)->getNickName() + WHI, getClient(fd)->getFd(), ": You are in too many channels\n");
         return;
     }
     if(!this->channels[j].getPassword().empty() && this->channels[j].getPassword() != token[i].second)
     {
         if(!IsInvited(getClient(fd), token[i].first, 0))
         {
-            senderror(getClient(fd)->getNickName(), "#" + token[i].first, getClient(fd)->getFd(), " :Wrong password\n");
+            senderror(CYA + getClient(fd)->getNickName() + WHI + " ", "#" + token[i].first, getClient(fd)->getFd(), ": Wrong password\n");
             return;
         }
     }
@@ -123,13 +123,13 @@ void Server::ExistCh(std::vector<std::pair<std::string, std::string> > &token, i
     {
         if(!IsInvited(getClient(fd), token[i].first, 1))
         {
-            senderror(getClient(fd)->getNickName(), "#" + token[i].first, getClient(fd)->getFd(), " :You are not invited\n");
+            senderror(CYA + getClient(fd)->getNickName() + WHI + " ", "#" + token[i].first, getClient(fd)->getFd(), ": You are not invited\n");
             return;
         }
     }
     if(this->channels[j].getLimit() && this->channels[j].getClientsNumber() >= this->channels[j].getLimit())
     {
-        senderror(getClient(fd)->getNickName(), "#" + token[i].first, getClient(fd)->getFd(), " :Channel is full\n");
+        senderror(CYA + getClient(fd)->getNickName() + WHI + " ", "#" + token[i].first, getClient(fd)->getFd(), ": Channel is full\n");
         return;
     }
     
@@ -137,23 +137,21 @@ void Server::ExistCh(std::vector<std::pair<std::string, std::string> > &token, i
     this->channels[j].addClient(*client);
     if(channels[j].getTopicName().empty())
     {
-        _sendResponse(":" + getClient(fd)->getHostName() + "@" + getClient(fd)->getIpAdd() + " JOIN #" + token[i].first + "\n" + \
-            ": " + getClient(fd)->getNickName() + " @ #" + channels[j].getName() + " :" + channels[j].clientChannelList() + "\n" + \
-            ": " + getClient(fd)->getNickName() + " #" + channels[j].getName() + " :END of /NAMES list\n", fd);
+        _sendResponse(getClient(fd)->getHostName() + GRE + " JOINED " + WHI + "#" + token[i].first + "\n" + \
+            "Users in this channel: " + channels[j].clientChannelList() + "\n", fd);
     }else{
-        _sendResponse(":" + getClient(fd)->getHostName() + "@" + getClient(fd)->getIpAdd() + " JOIN #" + token[i].first + "\n" + \
-            ": " + getClient(fd)->getNickName() + " #" + channels[j].getName() + " :" + channels[j].getTopicName() + "\n" + \
-            ": " + getClient(fd)->getNickName() + " @ #" + channels[j].getName() + " :" + channels[j].clientChannelList() + "\n" + \
-            ": " + getClient(fd)->getNickName() + " #" + channels[j].getName() + " :END of /NAMES list\n", fd);
+        _sendResponse(getClient(fd)->getHostName() + GRE + " JOINED " + WHI + "#" + token[i].first + "\n" + \
+            getClient(fd)->getNickName() + " #" + channels[j].getName() + " :" + channels[j].getTopicName() + "\n" + \
+            "Users in this channel: " + channels[j].clientChannelList() + "\n", fd);
     }
-    channels[j].sendToAll(":" + getClient(fd)->getHostName() + "@" + getClient(fd)->getIpAdd() + " JOIN #" + token[i].first + "\n", fd);
+    channels[j].sendToAll(getClient(fd)->getHostName() + GRE + " JOINED " + WHI + "#" + token[i].first + "\n", fd);
 }
 
 void Server::NotExistCh(std::vector<std::pair<std::string, std::string> >&token, int i, int fd)
 {
     if(SearchForClients(getClient(fd)->getNickName()) >= 10)
     {
-        senderror(getClient(fd)->getNickName(), getClient(fd)->getFd(), " :You are in too many channels\n");
+        senderror(CYA + getClient(fd)->getNickName() + WHI, getClient(fd)->getFd(), ": You are in too many channels\n");
         return;
     }
     Channel newChannel;
@@ -161,9 +159,8 @@ void Server::NotExistCh(std::vector<std::pair<std::string, std::string> >&token,
     newChannel.addAdmin(*getClient(fd));
     newChannel.setCreationTime();
     this->channels.push_back(newChannel);
-    _sendResponse(":" + getClient(fd)->getHostName() + "@" + getClient(fd)->getIpAdd() + " JOIN #" + newChannel.getName() + "\n" + \
-        ": " + getClient(fd)->getNickName() + " @ #" + newChannel.getName() + " :" + newChannel.clientChannelList() + "\n" + \
-        ": " + getClient(fd)->getNickName() + " #" + newChannel.getName() + " :END of /NAMES list\n", fd);
+    _sendResponse(getClient(fd)->getHostName()  + GRE + " JOINED " + WHI + "#" + newChannel.getName() + "\n" + \
+         "Users in this channel: " + newChannel.clientChannelList() + "\n", fd);
 }
 
 void Server::join(std::string cmd, int fd)
@@ -171,12 +168,12 @@ void Server::join(std::string cmd, int fd)
     std::vector<std::pair<std::string, std::string> > token;
     if(!SplitJoin(token, cmd, fd))
     {
-        senderror(getClient(fd)->getNickName(), getClient(fd)->getFd(), " :Not enough parameters\n");
+        senderror(CYA + getClient(fd)->getNickName() + WHI, getClient(fd)->getFd(), ": Not enough parameters\n");
         return;
     }
     if(token.size() > 10)
     {
-        senderror(getClient(fd)->getNickName(), getClient(fd)->getFd(), " :Too many channels\n");
+        senderror(CYA + getClient(fd)->getNickName() + WHI, getClient(fd)->getFd(), ": Too many channels\n");
         return;
     }
     for (size_t i = 0; i < token.size(); i++)

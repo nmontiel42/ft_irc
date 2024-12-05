@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/16 15:38:55 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/11/26 16:30:58 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/12/04 15:50:02 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,22 +142,23 @@ std::string Channel::getModes()
 	return mode;
 }
 
- std::string Channel::clientChannelList()
+std::string Channel::clientChannelList()
 {
-	std::string list;
-	for(size_t i = 0; i < admins.size(); i++){
-		list += "@" + admins[i].getNickName();
-		if((i + 1) < admins.size())
-			list += " ";
-	}
-	if(clients.size())
-		list += " ";
-	for(size_t i = 0; i < clients.size(); i++){
-		list += clients[i].getNickName();
-		if((i + 1) < clients.size())
-			list += " ";
-	}
-	return list;
+    std::string list;
+
+    for (size_t i = 0; i < admins.size(); i++) {
+        list += admins[i].getNickName();
+        if ((i + 1) < admins.size() || !clients.empty())
+            list += ", ";
+    }
+
+    for (size_t i = 0; i < clients.size(); i++) {
+        list += clients[i].getNickName();
+        if ((i + 1) < clients.size())
+            list += ", ";
+    }
+
+    return list;
 }
 
 Client *Channel::getClient(int fd)

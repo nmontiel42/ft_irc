@@ -6,7 +6,7 @@
 /*   By: anttorre <anttorre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/29 17:08:42 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/12/04 16:42:06 by anttorre         ###   ########.fr       */
+/*   Updated: 2024/12/05 11:25:44 by anttorre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,14 @@
 
 #include "Client.hpp"
 #include "Channel.hpp"
+
+#define RED "\e[1;31m"
+#define WHI "\e[0;37m"
+#define GRE "\e[1;32m"
+#define YEL "\e[1;33m"
+#define CYA "\e[1;36m"
+
+
 
 class Channel;
 
@@ -139,7 +147,7 @@ class Server
         std::string topicRestriction(Channel *channel, char opera, std::string chain);
         std::string passwordMode(std::vector<std::string> splited, Channel *channel, size_t &pos, char opera, int fd, std::string chain, std::string &arguments);
         std::string channelLimit(std::vector<std::string> splited, Channel *channel, size_t &pos, char opera, int fd, std::string chain, std::string &arguments);
-        std::string operatorPrivilege(std::vector<std::string> splited, Channel *channel, size_t &pos, char opera, int fd, std::string chain, std::string &arguments);
+        std::string operatorPrivilege(std::vector<std::string> tokens, Channel *channel, size_t& pos, int fd, char opera, std::string chain, std::string& arguments);
         std::string modeToAppend(std::string chain, char opera, char mode);
         std::vector<std::string> splitParams(std::string params);
         void getCmdArgs(std::string cmd, std::string &name, std::string &modeset, std::string &params);
