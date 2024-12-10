@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 15:30:28 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/12/05 13:24:21 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/12/10 10:51:54 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,15 +15,15 @@
 void Server::topic(std::string &cmd, int &fd)
 {
     std::vector<std::string> scmd = split_cmd(cmd);
-    if (scmd.size() < 2) // Verifica que haya al menos un nombre de canal
+    if (scmd.size() < 2)
     {
         senderror(CYA + getClient(fd)->getNickName() + WHI, fd, ": Not enough parameters\r\n");
         return;
     }
 
-    std::string nmch = scmd[1]; // Nombre del canal
+    std::string nmch = scmd[1];
     if (nmch[0] == '#')
-        nmch = nmch.substr(1); // Quita el '#' para trabajar con el nombre limpio
+        nmch = nmch.substr(1);
 
     if (!getChannel(nmch))
     {
@@ -37,7 +37,6 @@ void Server::topic(std::string &cmd, int &fd)
         return;
     }
 
-    // Caso en el que no se especifica un tópico, solo se quiere mostrarlo
     if (scmd.size() == 2)
     {
         if (getChannel(nmch)->getTopicName().empty())

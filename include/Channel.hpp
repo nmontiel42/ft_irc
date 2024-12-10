@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/16 14:39:19 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/10/29 17:07:19 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/12/10 10:48:21 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ class Channel
         Channel &operator=(const Channel &);
         ~Channel();
 
-        //*------------------Getters------------------*// (done)
+        //*------------------Getters------------------*//
         int getInvitOnly();
         int getTopic();
         int getKey();
@@ -59,7 +59,7 @@ class Channel
         Client *getAdmin(int fd);
         Client *getClientInChannel(std::string name);
 
-        //*------------------Setters------------------*// (done)
+        //*------------------Setters------------------*//
         void setInvitOnly(int invit_only);
         void setTopic(int topic);
         void setKey(int key);
@@ -72,7 +72,7 @@ class Channel
         void setModeAtIndex(size_t index, bool mode);
         void setCreationTime();
         
-        //*------------------Functions------------------*// (done)
+        //*------------------Functions------------------*//
         void removeClient(int fd);
         void removeAdmin(int fd);
         void addClient(Client newClient);
@@ -80,7 +80,7 @@ class Channel
         bool changeClientToAdmin(std::string &nick);
         bool changeAdminToClient(std::string &nick);
 
-        //*------------------Send------------------*// (done)
+        //*------------------Send------------------*//
         void sendToAll(std::string msg);
         void sendToAll(std::string msg, int fd);
 };
