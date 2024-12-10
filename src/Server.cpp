@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2024/12/10 12:02:51 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/12/10 12:10:43 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -525,7 +525,7 @@ void Server::set_nickname(std::string cmd, int fd)
         return;
     }
 
-    if (nickNameInUse(cmd) && cli->getNickName() != cmd)  // Verifica si el apodo ya está en uso
+    if (nickNameInUse(cmd) && cli->getNickName() != cmd)
     {
         inUse = "*";
         if (cli->getNickName().empty())
@@ -534,19 +534,18 @@ void Server::set_nickname(std::string cmd, int fd)
         return;
     }
 
-    if (!isValidNickName(cmd))  // Verifica si el apodo es válido
+    if (!isValidNickName(cmd))
     {
         _sendResponse(RED + std::string(cmd) + ": Wrong nickname.\r\n" + WHI, fd);
         return;
     }
 
-    // Si el cliente está registrado y se puede cambiar el apodo
     if (cli && cli->getRegistered())
     {
         std::string oldNick = cli->getNickName();
-        cli->setNickname(cmd);  // Establece el nuevo apodo
+        cli->setNickname(cmd);
 
-        for (size_t i = 0; i < channels.size(); i++)  // Cambia el apodo en los canales
+        for (size_t i = 0; i < channels.size(); i++)
         {
             Client *cl = channels[i].getClientInChannel(oldNick);
             if (cl)
@@ -555,25 +554,24 @@ void Server::set_nickname(std::string cmd, int fd)
 
         if (!oldNick.empty() && oldNick != cmd)
         {
-            if (oldNick == "*" && !cli->getUserName().empty())  // Primer apodo
+            if (oldNick == "*" && !cli->getUserName().empty())
             {
                 cli->setLogedIn(true);
                 _sendResponse("Welcome to the IRC server!\r\n", fd);
                 _sendResponse("Nickname established: " + cmd + "\r\n", fd);
             }
-            else  // Cambio de apodo
+            else
             {
                 _sendResponse("Your old nickname: " + oldNick + ", changed to: " + cmd + "\r\n", fd);
             }
             return;
         }
     }
-    else if (cli && !cli->getRegistered())  // Si no está registrado
+    else if (cli && !cli->getRegistered())
     {
         _sendResponse(cmd + ": You are not registered!\r\n", fd);
     }
 
-    // Si el cliente está registrado y tiene un nombre de usuario y un apodo válido
     if (cli && cli->getRegistered() && !cli->getUserName().empty() && !cli->getNickName().empty() && cli->getNickName() != "*" && !cli->getLogedIn())
     {
         cli->setLogedIn(true);
