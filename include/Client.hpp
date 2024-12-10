@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/16 12:54:30 by antferna          #+#    #+#             */
-/*   Updated: 2024/11/26 16:40:10 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/12/10 12:01:38 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,4 +63,3 @@ class Client
 		void 		rmChannelInvite(std::string &chname);
 		void 		clearBuffer();
 };
-

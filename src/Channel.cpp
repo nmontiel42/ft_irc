@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/16 15:38:55 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/12/10 10:49:03 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/12/10 12:06:39 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,10 @@
 Channel::Channel()
     : invit_only(0), topic(0), key(0), limit(0),
       topic_restriction(false), name(""), created_at(""), topic_name("") {
-
+    // Inicialización explícita de cada elemento de `modes`
     char characters[5] = {'i', 't', 'k', 'o', 'l'};
     for (int i = 0; i < 5; i++) {
+    // Crear un par y agregarlo al vector
         std::pair<char, bool> p(characters[i], false);
         modes.push_back(p);
     }   
@@ -248,9 +249,9 @@ void Channel::setModeAtIndex(size_t index, bool mode)
 
 void Channel::setCreationTime()
 {
-	std::time_t _time = std::time(NULL);
+	std::time_t _time = std::time(NULL); //actual time in seconds
 	std::ostringstream oss;
-	oss << _time;
+	oss << _time; //seconds in string
 	this->created_at = std::string(oss.str());
 }
 

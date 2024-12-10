@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 11:03:27 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/12/10 10:49:52 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/12/10 12:03:09 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ std::string Server::SplitCmdKick(std::string cmd, std::vector<std::string> &tmp,
     std::string str1;
     user = tmp[1];
     tmp.clear();
-    for (size_t i = 0; i < str.size(); i++)
+    for (size_t i = 0; i < str.size(); i++) //If there is multiple channels
     {
         if (str[i] == ',')
         {
@@ -64,7 +64,7 @@ std::string Server::SplitCmdKick(std::string cmd, std::vector<std::string> &tmp,
             str1 += str[i];
     }
     tmp.push_back(str1);
-    for (size_t i = 0; i < tmp.size(); i++)
+    for (size_t i = 0; i < tmp.size(); i++) //Erase empty strings
     {
         if (tmp[i].empty())
             tmp.erase(tmp.begin() + i--);
@@ -100,12 +100,12 @@ void Server::kick(std::string cmd, int fd)
         if (getChannel(tmp[i]))
         {
             Channel *ch = getChannel(tmp[i]);
-            if (!ch->getClient(fd) && !ch->getAdmin(fd))
+            if (!ch->getClient(fd) && !ch->getAdmin(fd)) //If the client is not on the channel
             {
                 senderror(CYA + getClient(fd)->getNickName() + WHI, getClient(fd)->getFd(), ": You are not in this channel.\r\n");
                 continue ;
             }
-            if (ch->getAdmin(fd))
+            if (ch->getAdmin(fd)) //If the client is Admin
             {
                 if (ch->getClientInChannel(user))
                 {

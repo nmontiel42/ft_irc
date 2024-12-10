@@ -6,7 +6,7 @@
 /*   By: nmontiel <nmontiel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/29 17:08:42 by nmontiel          #+#    #+#             */
-/*   Updated: 2024/12/10 10:48:30 by nmontiel         ###   ########.fr       */
+/*   Updated: 2024/12/10 12:01:58 by nmontiel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ class Server
         ~Server();
         Server &operator=(Server const &);
         
-        //*----------------------Getters----------------------*//
+        //*----------------------Getters----------------------*// (done)
         int getFd();
         int getPort();
         std::string getPassword();
@@ -71,7 +71,7 @@ class Server
         Client *getClientNick(std::string nickname);
         Channel *getChannel(std::string name);
 
-        //*----------------------Setters----------------------*//
+        //*----------------------Setters----------------------*// (done)
         void setPort(int port);
         void setFd(int server_fdsocket);
         void setPassword(std::string password);
@@ -79,13 +79,13 @@ class Server
         void addChannel(Channel newChannel);
         void addFds(pollfd newFd);
 
-        //*----------------------Server functions----------------------*//
+        //*----------------------Server functions----------------------*// (done)
         void init(int port, std::string pass);
 		void accept_new_client();
         void set_server_socket();
         void recieveNewData(int fd);
 
-        //*----------------------Remove functions----------------------*//
+        //*----------------------Remove functions----------------------*// (done)
         void RemoveClient(int fd);
         void RemoveChannel(std::string name);
         void RmChannels(int fd);
@@ -96,17 +96,17 @@ class Server
         std::vector<std::string> split_recievedBuffer(std::string);
         void parse_exec_cmd(std::string &cmd, int fd);
 
-        //*----------------------Send functions----------------------*//
+        //*----------------------Send functions----------------------*// (done)
         void _sendResponse(std::string response, int fd);
         void senderror(std::string clientname, int fd, std::string);
         void senderror(std::string clientname, std::string channelname, int fd, std::string msg);
         void senderror(int fd, std::string channelname, std::string msg);
 
-        //*----------------------Close and Signals----------------------*//
+        //*----------------------Close and Signals----------------------*// (done)
         static void Signalhandler(int signum);
         void close_fds();
 
-        //*----------------------Authentification System----------------------*//
+        //*----------------------Authentification System----------------------*// (done)
         bool notRegistered(int fd);
         bool nickNameInUse(std::string &);
         bool isValidNickName(std::string &);
@@ -114,7 +114,7 @@ class Server
         void set_username(std::string &username, int fd);
         void set_nickname(std::string cmd, int fd); 
         
-        //*----------------------JOIN----------------------*//
+        //*----------------------JOIN----------------------*// (done)
         int SplitJoin(std::vector<std::pair<std::string, std::string> > &token, std::string cmd, int fd);
         int SearchForClients(std::string nickname);
         void ExistCh(std::vector<std::pair<std::string, std::string> > &token, int i, int j, int fd);
@@ -122,28 +122,28 @@ class Server
         void join(std::string cmd, int fd);
 		void invite(std::string &cmd, int &fd);
 
-        //*----------------------TOPIC----------------------*//
+        //*----------------------TOPIC----------------------*// (done)
         std::string tTopic();
         void topic(std::string &cmd, int &fd);
         std::string getTopic(std::string &input);
         int getPos(std::string &cmd);
 
-        //*----------------------QUIT----------------------*//
+        //*----------------------QUIT----------------------*// (done)
         void quit(std::string cmd, int fd);
         
-        //*----------------------PART----------------------*//
+        //*----------------------PART----------------------*// (done)
         void part(std::string cmd, int fd);
         int SplitCmdPart(std::string cmd, std::vector<std::string> &tmp, std::string &reason, int fd);
 
-        //*----------------------KICK----------------------*//
+        //*----------------------KICK----------------------*// (done)
         void kick(std::string cmd, int fd);
         std::string SplitCmdKick(std::string cmd, std::vector<std::string> &tmp, std::string &user, int fd);
 
-        //*----------------------PRIVMSG----------------------*//
+        //*----------------------PRIVMSG----------------------*// (done)
         void privmsg(std::string cmd, int fd);
         void checkForChannelsClients(std::vector<std::string> &tmp, int fd);
 
-        //*----------------------MODE----------------------*//
+        //*----------------------MODE----------------------*// (done)
         void mode(std::string &cmd, int fd);
         std::string inviteOnly(Channel *channel, char opera, std::string chain);
         std::string topicRestriction(Channel *channel, char opera, std::string chain);
@@ -155,7 +155,7 @@ class Server
         void getCmdArgs(std::string cmd, std::string &name, std::string &modeset, std::string &params);
         bool isValidLimit(std::string &limit);
 
-        //*----------------------COMMANDS----------------------*//
+        //*----------------------COMMANDS----------------------*// (done)
         void findSubString(std::string cmd, std::string tofind, std::string &str);
         std::string splitCommand(std::string &cmd, std::vector<std::string> &tmp);
 
@@ -177,4 +177,3 @@ class Server
 				}
 		};
 };
-
